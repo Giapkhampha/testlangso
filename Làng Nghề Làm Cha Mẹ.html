@@ -1,0 +1,1976 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Làng Nghề Làm Cha Mẹ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: cả màn hình là diorama 3D; các tấm "giấy dó" nổi trên cảnh — thẻ tên làng góc trái trên, bến điều khiển ở đáy, ngăn kéo bên phải cho thẻ cư dân và Trạm Trưởng Làng */
+:root{
+  --paper:#f6f5ec; --paper-2:#ecebdd; --ink:#1d332e; --ink-2:#56675f; --rule:#d7d3bf;
+  --straw:#c98a1c; --straw-soft:#f5e3b5; --rice:#4c8a38; --rice-soft:#dcebcf; --lotus:#c4587a;
+  --danger:#b3432f; --bg:#cde4e4; --shadow:0 12px 32px rgba(29,51,46,.16);
+  --f-display:"Baloo 2","Be Vietnam Pro",ui-rounded,system-ui,sans-serif;
+  --f-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#15221e; --paper-2:#1d2d28; --ink:#e8efe3; --ink-2:#a6b4aa; --rule:#30433b;
+    --straw:#e8b04a; --straw-soft:#4b3d1c; --rice:#82c068; --rice-soft:#223a26; --lotus:#e68aa4;
+    --danger:#e07a63; --bg:#0f1917; --shadow:0 12px 32px rgba(0,0,0,.45); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#15221e; --paper-2:#1d2d28; --ink:#e8efe3; --ink-2:#a6b4aa; --rule:#30433b;
+  --straw:#e8b04a; --straw-soft:#4b3d1c; --rice:#82c068; --rice-soft:#223a26; --lotus:#e68aa4;
+  --danger:#e07a63; --bg:#0f1917; --shadow:0 12px 32px rgba(0,0,0,.45); color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.5;overflow:hidden}
+#app{position:fixed;inset:0;overflow:hidden}
+#stage{position:absolute;inset:0;background:linear-gradient(#bfe3ee,#e4efe0)}
+#c{display:block;width:100%;height:100%;touch-action:none;outline:none}
+#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+#loading{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-display);font-size:22px;color:#1d332e;letter-spacing:.02em}
+#loading.is-error{font-family:var(--f-body);font-size:15px;padding-inline:24px;text-align:center}
+
+.panel{position:absolute;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);color:var(--ink)}
+.eyebrow{margin:0;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.1;margin:0;text-wrap:balance}
+
+/* Brand */
+.brand{top:16px;left:16px;width:min(330px,calc(100% - 32px));padding:14px 16px 12px;display:grid;gap:10px;max-height:calc(100% - 32px);overflow:auto}
+.brand h1{font-size:28px;letter-spacing:-.01em}
+.brand-hide{position:absolute;top:10px;right:10px;font:inherit;font-size:12px;font-weight:600;color:var(--ink-2);background:var(--paper-2);border:1px solid var(--rule);border-radius:8px;padding:4px 9px;cursor:pointer}
+.brand-hide:hover{color:var(--ink);border-color:var(--ink-2)}
+.brand-show{top:16px;left:16px;font:inherit;font-size:13px;font-weight:600;padding:8px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.brand-show:hover{border-color:var(--straw)}
+.brand[hidden],.brand-show[hidden]{display:none}
+.brand .motto{margin:2px 0 0;font-size:13px;color:var(--ink-2)}
+.brand .motto b{color:var(--rice);font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0}
+.stats div{background:var(--paper-2);border-radius:10px;padding:6px 8px}
+.stats dt{font-size:11px;color:var(--ink-2);letter-spacing:.04em}
+.stats dd{margin:0;font-family:var(--f-display);font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.mode{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.mode-note{margin:0;font-size:12.5px;color:var(--ink-2)}
+.mode-note b{color:var(--ink)}
+.legend{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.legend button{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:14px 1fr auto;gap:8px;align-items:center;width:100%;padding:4px 6px;border-radius:8px}
+.legend button:hover{background:var(--paper-2)}
+.legend button:focus-visible{outline:2px solid var(--straw);outline-offset:1px}
+.legend .dot{width:12px;height:12px;border-radius:4px;background:var(--c)}
+.legend .nm{font-weight:600}
+.legend .nm small{font-weight:400;color:var(--ink-2);margin-left:4px}
+.legend .ct{font-variant-numeric:tabular-nums;color:var(--ink-2);font-size:12.5px}
+.brand details summary{cursor:pointer;font-size:12.5px;color:var(--ink-2);list-style:none}
+.brand details summary::-webkit-details-marker{display:none}
+.brand details summary::before{content:"▸ ";}
+.brand details[open] summary::before{content:"▾ ";}
+.brand details:not([open]) + .legend{display:none}
+
+/* Buttons */
+.seg{display:inline-flex;background:var(--paper-2);border-radius:10px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button,.chipbtn,.btn{font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:transparent;border:0;border-radius:8px;padding:6px 10px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--paper);box-shadow:0 1px 0 var(--rule),0 0 0 1px var(--straw) inset;color:var(--ink)}
+.seg button:hover{background:color-mix(in srgb,var(--paper) 70%,transparent)}
+.seg button kbd{font:inherit;font-size:10.5px;color:var(--ink-2);margin-left:4px;font-weight:500}
+.chipbtn{border:1px solid var(--rule);background:var(--paper);font-weight:500}
+.chipbtn[aria-pressed="true"]{background:var(--rice-soft);border-color:var(--rice);font-weight:600}
+.btn{border:1px solid var(--rule);background:var(--paper)}
+.btn:hover{border-color:var(--ink-2)}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.primary:disabled{opacity:.45;cursor:not-allowed}
+.btn.danger{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 45%,var(--rule))}
+.btn.small{font-size:12px;padding:4px 8px}
+.btn.station{background:var(--straw-soft);border-color:var(--straw)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--straw);outline-offset:2px}
+
+/* Dock */
+.dock{left:50%;bottom:16px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);padding:10px 12px;display:grid;gap:8px}
+.dock-row{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.dock-group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.dock-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.find{position:relative}
+.find input{font:inherit;font-size:13px;width:190px;max-width:100%;padding:6px 10px;border-radius:8px;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+.find ul{position:absolute;bottom:calc(100% + 6px);left:0;width:260px;max-height:260px;overflow:auto;margin:0;padding:4px;list-style:none;background:var(--paper);border:1px solid var(--rule);border-radius:10px;box-shadow:var(--shadow)}
+.find li button{all:unset;box-sizing:border-box;display:block;width:100%;padding:6px 8px;border-radius:6px;cursor:pointer;font-size:13px}
+.find li button:hover,.find li button:focus-visible{background:var(--paper-2)}
+.find li small{color:var(--ink-2)}
+.dock-toggle{display:none}
+.dock.is-collapsed .dock-more{display:none}
+
+/* Drawers */
+.drawer{top:16px;right:16px;width:min(380px,calc(100% - 32px));max-height:calc(100% - 32px);overflow:auto;padding:16px;display:grid;gap:12px;align-content:start}
+.drawer-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.drawer-head h2{font-size:24px}
+.icon-btn{font:inherit;font-size:22px;line-height:1;width:34px;height:34px;border-radius:10px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);cursor:pointer;flex:none}
+.admin{width:min(440px,calc(100% - 32px))}
+
+/* ID card */
+.idcard{border-radius:14px;overflow:hidden;border:1px solid var(--rule);background:var(--paper)}
+.idcard-top{display:flex;justify-content:space-between;padding:8px 12px;background:var(--xc);color:#fff;font-size:10.5px;font-weight:700;letter-spacing:.14em}
+.idcard-main{display:grid;grid-template-columns:auto 1fr;gap:14px;padding:14px 14px 6px;align-items:center}
+.idno{display:grid;justify-items:center;padding:6px 10px;border:2px solid var(--xc);border-radius:12px;min-width:76px}
+.idno small{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.idno strong{font-family:var(--f-display);font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
+.idname{min-width:0}
+.idname h3{font-size:22px;overflow-wrap:anywhere}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0 0;padding:0}
+.chip{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--paper-2);color:var(--ink)}
+.chip.xom{background:color-mix(in srgb,var(--xc) 22%,var(--paper));}
+.chip.warn{background:var(--straw-soft)}
+.chip.good{background:var(--rice-soft)}
+.family{display:flex;align-items:flex-end;gap:3px;padding:4px 14px 0;min-height:40px}
+.family svg{display:block}
+.idrows{margin:0;padding:8px 14px 12px;display:grid;gap:6px}
+.idrows div{display:grid;grid-template-columns:104px 1fr;gap:8px}
+.idrows dt{font-size:12px;color:var(--ink-2)}
+.idrows dd{margin:0;font-size:13.5px;overflow-wrap:anywhere}
+.idcard-foot{display:flex;justify-content:space-between;gap:8px;padding:8px 14px;border-top:1px dashed var(--rule);font-size:11.5px;color:var(--ink-2)}
+.idcard-foot b{color:var(--rice)}
+.card-actions{display:flex;flex-wrap:wrap;gap:8px}
+.info h3{font-size:24px}
+.info p{margin:0}
+.info dl{margin:0;display:grid;gap:8px}
+.info dt{font-size:12px;color:var(--ink-2)}
+.info dd{margin:0;font-size:14px}
+.seasons{display:flex;flex-wrap:wrap;gap:4px;margin:0;padding:0;list-style:none;counter-reset:s}
+.seasons li{font-size:12px;padding:3px 8px;border-radius:999px;background:var(--paper-2)}
+.seasons li:last-child{background:var(--rice-soft);font-weight:600}
+.gift-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.gift-list li{display:grid;gap:2px;padding:8px 10px;border-radius:10px;background:var(--paper-2)}
+.gift-list small{color:var(--ink-2);font-size:11.5px}
+.muted{color:var(--ink-2)}
+
+/* Admin */
+.tabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid var(--rule);padding-bottom:8px}
+.tabs button{font:inherit;font-size:13px;font-weight:600;border:0;background:transparent;color:var(--ink-2);padding:6px 10px;border-radius:8px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--paper-2);color:var(--ink)}
+.tabpanel{display:grid;gap:10px}
+.tabpanel label{font-size:12.5px;font-weight:600}
+.tabpanel input[type=text],.tabpanel input:not([type]),.tabpanel input[type=number],.tabpanel input[type=date],.tabpanel select,.tabpanel textarea{font:inherit;font-size:13.5px;width:100%;box-sizing:border-box;padding:7px 9px;border-radius:8px;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+.tabpanel textarea{resize:vertical;min-height:80px}
+.field{display:grid;gap:4px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.check{display:flex!important;gap:8px;align-items:flex-start;font-weight:500!important}
+.check input{margin-top:3px}
+.steps{margin:0;padding-left:20px;display:grid;gap:4px;font-size:13px}
+.preview{margin:0;font-size:13px;background:var(--paper-2);border-radius:10px;padding:8px 10px}
+.preview ol{margin:6px 0 0;padding-left:18px}
+.form-error{margin:0;color:var(--danger);font-size:13px;min-height:1em}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px}
+fieldset{border:1px solid var(--rule);border-radius:10px;padding:8px 10px;margin:0;display:grid;gap:6px}
+legend{font-size:12.5px;font-weight:600;padding:0 4px}
+.kid-row{display:grid;grid-template-columns:1fr auto;gap:6px}
+.pick-list{list-style:none;margin:0;padding:0;max-height:180px;overflow:auto;display:grid;gap:2px}
+.pick-list button{all:unset;box-sizing:border-box;cursor:pointer;display:block;width:100%;padding:5px 8px;border-radius:6px;font-size:13px}
+.pick-list button:hover,.pick-list button:focus-visible{background:var(--paper-2)}
+.option{border:1px solid var(--rule);border-radius:10px;padding:10px;display:grid;gap:6px}
+.option h3{font-size:17px}
+.option p{margin:0;font-size:13px;color:var(--ink-2)}
+hr{border:0;border-top:1px solid var(--rule);margin:4px 0}
+
+/* 3D labels */
+.lbl{position:absolute;left:0;top:0;will-change:transform;white-space:nowrap;font-family:var(--f-body);transition:opacity .25s}
+.lbl-xom{background:rgba(255,253,244,.92);color:#1d332e;border-radius:999px;padding:3px 12px 4px 8px;display:flex;gap:7px;align-items:center;box-shadow:0 3px 10px rgba(0,0,0,.15);border:1px solid rgba(0,0,0,.06)}
+.lbl-xom i{width:10px;height:10px;border-radius:3px;background:var(--c)}
+.lbl-xom b{font-family:var(--f-display);font-size:15px;font-weight:700}
+.lbl-xom span{font-size:11.5px;color:#56675f}
+.lbl-ws{background:rgba(29,51,46,.84);color:#f6f5ec;border-radius:8px;padding:2px 8px 3px;font-size:12px;text-align:center;line-height:1.25}
+.lbl-ws b{display:block;font-weight:700;font-size:12.5px}
+.lbl-ws span{font-size:10.5px;opacity:.8}
+.lbl-ws.is-now{background:#c98a1c;color:#1d1a10}
+.lbl-ws.is-now span{opacity:1}
+.lbl-pub{background:rgba(255,253,244,.88);color:#1d332e;border-radius:6px;padding:1px 7px;font-size:11px;font-weight:600}
+.lbl-no{background:#fffdf4;color:#1d332e;border:1px solid rgba(0,0,0,.18);border-radius:4px;padding:0 4px;font-size:10.5px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.5}
+.lbl-no.is-sel{background:#c98a1c;color:#1d1a10;border-color:#8a5f12}
+
+#tip{position:absolute;pointer-events:none;background:rgba(20,32,29,.9);color:#f6f5ec;font-size:12.5px;padding:5px 9px;border-radius:8px;max-width:240px;z-index:5}
+#tip b{font-weight:700}
+#toast{position:absolute;left:50%;top:16px;transform:translateX(-50%) translateY(-120%);transition:transform .3s;background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:10px;font-size:13.5px;max-width:calc(100% - 32px);z-index:6;box-shadow:var(--shadow)}
+#toast.is-on{transform:translateX(-50%) translateY(0)}
+#hint{position:absolute;left:50%;top:18%;transform:translateX(-50%);background:rgba(20,32,29,.78);color:#fdf8e8;font-family:var(--f-display);font-size:20px;padding:10px 18px;border-radius:14px;text-align:center;max-width:calc(100% - 32px);pointer-events:none;transition:opacity .6s}
+
+/* Chế độ quay phim: ẩn mọi bảng, chỉ còn làng */
+body.film .panel,body.film #tip,body.film #toast{display:none!important}
+#film-exit{position:absolute;top:16px;right:16px;z-index:7;font:inherit;font-size:13px;font-weight:600;color:#fdf8e8;background:rgba(20,32,29,.72);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;cursor:pointer;transition:opacity .5s}
+#film-exit:hover{background:rgba(20,32,29,.9)}
+#film-exit kbd{font:inherit;font-size:11px;opacity:.75;margin-left:6px}
+body.film.film-idle #film-exit{opacity:0;pointer-events:none}
+body.film.film-idle,body.film.film-idle #c{cursor:none}
+
+@media (max-width:760px){
+  .brand{padding:10px 12px;gap:8px;width:calc(100% - 32px)}
+  .brand h1{font-size:22px}
+  .stats dd{font-size:17px}
+  .dock{left:16px;right:16px;transform:none;width:auto;padding:8px 10px}
+  .dock-toggle{display:inline-block}
+  .find input{width:150px}
+  .drawer{top:auto;bottom:16px;left:16px;right:16px;width:auto;max-height:72%}
+  .admin{width:auto}
+  .idno strong{font-size:32px}
+  #hint{font-size:16px;top:30%}
+}
+@media (prefers-reduced-motion: reduce){
+  #toast,.lbl,#hint{transition:none}
+}
+</style>
+
+<div id="app">
+  <div id="stage">
+    <canvas id="c" tabindex="0" aria-label="Mô hình 3D Làng Nghề Làm Cha Mẹ. Kéo để xoay, cuộn hoặc chụm hai ngón để phóng to."></canvas>
+    <div id="labels" aria-hidden="true"></div>
+    <div id="loading">Đang dựng làng…</div>
+    <div id="hint" style="opacity:0" aria-hidden="true"></div>
+  </div>
+
+  <button type="button" class="brand-show panel" id="brand-show" hidden aria-controls="brand" title="Hiện bảng làng (phím B)">☰ Bảng làng</button>
+  <header class="brand panel" id="brand">
+    <button type="button" class="brand-hide" id="brand-hide" aria-controls="brand" title="Ẩn bảng (phím B)">Ẩn bảng</button>
+    <div>
+      <p class="eyebrow">Làng số · bản dựng thử</p>
+      <h1>Làng Nghề Làm Cha Mẹ</h1>
+      <p class="motto">Mỗi cư dân một mái nhà. Làng lớn lên nhờ <b>Cứ Cho Đi</b>.</p>
+    </div>
+    <dl class="stats">
+      <div><dt>Nhà</dt><dd id="st-houses">0</dd></div>
+      <div><dt>Cư dân</dt><dd id="st-people">0</dd></div>
+      <div><dt>Trời làng</dt><dd id="st-weather">Nắng</dd></div>
+    </dl>
+    <div class="mode">
+      <div class="seg" role="group" aria-label="Chọn làng">
+        <button type="button" id="mode-sample" aria-pressed="true">Làng mẫu</button>
+        <button type="button" id="mode-real" aria-pressed="false">Làng thật</button>
+      </div>
+    </div>
+    <p class="mode-note" id="mode-note">Đang xem <b>làng mẫu</b>: nhà và cư dân chỉ để minh hoạ.</p>
+    <details id="legend-wrap" open>
+      <summary>5 xóm · bấm để bay tới</summary>
+    </details>
+    <ul class="legend" id="legend"></ul>
+  </header>
+
+  <nav class="dock panel" id="dock" aria-label="Điều khiển làng">
+    <div class="dock-row">
+      <div class="dock-group">
+        <span class="dock-label">Góc nhìn</span>
+        <div class="seg" role="group" aria-label="Góc nhìn">
+          <button type="button" data-cam="overview" aria-pressed="true">Toàn cảnh<kbd>1</kbd></button>
+          <button type="button" data-cam="train" aria-pressed="false">Chuyến tàu<kbd>2</kbd></button>
+          <button type="button" data-cam="child" aria-pressed="false">Góc của con<kbd>3</kbd></button>
+          <button type="button" data-cam="home" aria-pressed="false">Cửa nhà<kbd>4</kbd></button>
+        </div>
+      </div>
+      <button type="button" class="chipbtn dock-toggle" id="dock-toggle" aria-expanded="false">Thêm</button>
+    </div>
+    <div class="dock-row dock-more">
+      <div class="dock-group">
+        <span class="dock-label">Giờ</span>
+        <div class="seg" role="group" aria-label="Giờ trong ngày">
+          <button type="button" data-time="auto" aria-pressed="true">Giờ Việt Nam</button>
+          <button type="button" data-time="day" aria-pressed="false">Ngày</button>
+          <button type="button" data-time="evening" aria-pressed="false">Chiều</button>
+          <button type="button" data-time="night" aria-pressed="false">Đêm</button>
+        </div>
+      </div>
+      <div class="dock-group">
+        <span class="dock-label">Trời</span>
+        <div class="seg" role="group" aria-label="Thời tiết">
+          <button type="button" data-weather="village" aria-pressed="true">Theo làng</button>
+          <button type="button" data-weather="sunny" aria-pressed="false">Nắng</button>
+          <button type="button" data-weather="cloudy" aria-pressed="false">Mây</button>
+          <button type="button" data-weather="rain" aria-pressed="false">Mưa</button>
+        </div>
+      </div>
+    </div>
+    <div class="dock-row dock-more">
+      <div class="dock-group">
+        <button type="button" class="chipbtn" data-toggle="labels" aria-pressed="true">Nhãn</button>
+        <button type="button" class="chipbtn" data-toggle="ink" aria-pressed="true">Nét mực</button>
+        <button type="button" class="chipbtn" data-toggle="spin" aria-pressed="false">Tự xoay</button>
+        <button type="button" class="chipbtn" data-toggle="lite" aria-pressed="false">Tiết kiệm pin</button>
+        <button type="button" class="chipbtn" id="film-on" title="Ẩn toàn bộ bảng để quay video (phím F)">Quay phim<kbd style="font:inherit;font-size:10.5px;color:var(--ink-2);margin-left:4px">F</kbd></button>
+      </div>
+      <div class="find">
+        <label for="find" class="dock-label" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Tìm nhà</label>
+        <input id="find" type="search" placeholder="Tìm nhà: số hoặc tên" autocomplete="off">
+        <ul id="find-results" hidden></ul>
+      </div>
+      <button type="button" class="btn station" id="open-admin" hidden>Trạm Trưởng Làng</button>
+    </div>
+  </nav>
+
+  <aside id="card" class="drawer panel" hidden aria-live="polite">
+    <div class="drawer-head"><p class="eyebrow" id="card-eyebrow">Thẻ cư dân</p><button type="button" class="icon-btn" id="card-close" aria-label="Đóng">×</button></div>
+    <div id="card-body"></div>
+  </aside>
+
+  <aside id="admin" class="drawer admin panel" hidden aria-labelledby="admin-title">
+    <div class="drawer-head">
+      <div><p class="eyebrow">Chỉ Trưởng Làng thấy mục này</p><h2 id="admin-title">Trạm Trưởng Làng</h2></div>
+      <button type="button" class="icon-btn" id="admin-close" aria-label="Đóng">×</button>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Công việc">
+      <button type="button" role="tab" data-tab="import" aria-selected="true">Nhập danh sách</button>
+      <button type="button" role="tab" data-tab="house" aria-selected="false">Sửa nhà</button>
+      <button type="button" role="tab" data-tab="split" aria-selected="false">Chia xóm</button>
+      <button type="button" role="tab" data-tab="week" aria-selected="false">Tuần này</button>
+    </div>
+
+    <section class="tabpanel" data-panel="import" role="tabpanel">
+      <ol class="steps">
+        <li>Vào group, mở mục <b>Mọi người</b>, cuộn tới cuối danh sách thành viên.</li>
+        <li>Bôi đen cả danh sách, copy rồi dán vào ô dưới.</li>
+        <li>Bấm <b>Lọc tên</b>, sửa lại nếu cần, rồi bấm <b>Đánh số &amp; xếp xóm</b>.</li>
+      </ol>
+      <div class="field"><label for="imp-raw">Dán danh sách từ Facebook</label>
+        <textarea id="imp-raw" rows="4" placeholder="Nguyễn Văn A&#10;Đã tham gia khoảng 3 tuần trước&#10;Trần Thị B&#10;Đã tham gia khoảng 1 tháng trước"></textarea></div>
+      <div><button type="button" class="btn" id="imp-clean">Lọc tên</button></div>
+      <div class="field"><label for="imp-names">Danh sách tên, mỗi dòng một nhà (sửa được)</label>
+        <textarea id="imp-names" rows="6"></textarea></div>
+      <label class="check"><input type="checkbox" id="imp-reverse" checked> Danh sách đang xếp người mới vào lên đầu, như trên Facebook. Đảo lại để người vào sớm nhất nhận số nhà nhỏ nhất.</label>
+      <div class="row2">
+        <div class="field"><label for="imp-start">Bắt đầu từ số nhà</label><input id="imp-start" type="number" min="1" max="999" value="1"></div>
+        <div class="field"><label for="imp-method">Cách xếp xóm</label>
+          <select id="imp-method">
+            <option value="even4">Chia đều 4 xóm theo tuổi con (tạm xếp)</option>
+            <option value="even5">Chia đều cả 5 xóm (tạm xếp)</option>
+            <option value="one">Đưa hết vào một xóm</option>
+          </select></div>
+      </div>
+      <div class="field" id="imp-one-wrap" hidden><label for="imp-one">Xóm</label><select id="imp-one"></select></div>
+      <label class="check"><input type="checkbox" id="imp-founding" checked> Đánh dấu là Cư dân Khai Làng</label>
+      <div class="preview" id="imp-preview">Chưa có tên nào.</div>
+      <div><button type="button" class="btn primary" id="imp-go" disabled>Đánh số &amp; xếp xóm</button></div>
+    </section>
+
+    <section class="tabpanel" data-panel="house" role="tabpanel" hidden>
+      <form id="hf" novalidate class="tabpanel">
+        <p class="preview" id="hf-mode">Thêm nhà mới</p>
+        <div class="row2">
+          <div class="field"><label for="hf-no">Số nhà</label><input id="hf-no" type="number" min="1" max="999" required></div>
+          <div class="field"><label for="hf-xom">Xóm</label><select id="hf-xom"></select></div>
+        </div>
+        <div class="field"><label for="hf-name">Tên hiển thị</label><input id="hf-name" type="text" maxlength="60" required placeholder="Ví dụ: Nhà Na và Bin"></div>
+        <div class="row2">
+          <div class="field"><label for="hf-adults">Người lớn trong nhà</label><input id="hf-adults" type="number" min="0" max="8" value="2"></div>
+          <div class="field"><label for="hf-joined">Ngày vào làng</label><input id="hf-joined" type="date"></div>
+        </div>
+        <fieldset><legend>Các con, theo nhóm tuổi</legend><div id="hf-kids" style="display:grid;gap:6px"></div><div><button type="button" class="btn small" id="hf-addkid">+ Thêm con</button></div></fieldset>
+        <div class="field"><label for="hf-give">Điều muốn cho đi</label><input id="hf-give" type="text" maxlength="120" placeholder="Ví dụ: một mẹo dỗ con ngủ"></div>
+        <div style="display:grid;gap:6px">
+          <label class="check"><input type="checkbox" id="hf-smoke"> Bếp có khói: nhà có chia sẻ trong group 7 ngày qua</label>
+          <label class="check"><input type="checkbox" id="hf-lit"> Sáng đèn: đã check-in tuần này</label>
+          <label class="check"><input type="checkbox" id="hf-prov"> Xóm đang tạm xếp, chờ biết tuổi con</label>
+          <label class="check"><input type="checkbox" id="hf-found"> Cư dân Khai Làng</label>
+        </div>
+        <p class="form-error" id="hf-err" role="alert"></p>
+        <div class="btn-row">
+          <button class="btn primary" type="submit" id="hf-save">Lưu nhà</button>
+          <button class="btn" type="button" id="hf-reset">Nhà mới</button>
+          <button class="btn danger" type="button" id="hf-del" hidden>Xoá nhà</button>
+        </div>
+      </form>
+      <div class="field"><label for="hf-pick">Chọn nhà để sửa</label><input id="hf-pick" type="text" placeholder="Gõ số nhà hoặc tên"></div>
+      <ul class="pick-list" id="hf-pick-list"></ul>
+    </section>
+
+    <section class="tabpanel" data-panel="split" role="tabpanel" hidden>
+      <p class="preview" id="sp-summary">Làng thật chưa có nhà nào.</p>
+      <div class="option">
+        <h3>Chia đều lại nhà tạm xếp</h3>
+        <p>Nhà đã xếp theo tuổi con giữ nguyên. Các nhà còn tạm xếp được chia đều vào 4 xóm theo tuổi con.</p>
+        <div><button type="button" class="btn" id="sp-even">Chia đều lại</button></div>
+      </div>
+      <div class="option">
+        <h3>Xếp theo tuổi con</h3>
+        <p>Nhà đã khai tuổi con về xóm của bé nhỏ nhất và bỏ dấu tạm xếp. <span id="sp-kids-count"></span></p>
+        <div><button type="button" class="btn" id="sp-kids">Xếp theo tuổi con</button></div>
+      </div>
+      <p class="form-error" id="sp-err" role="alert"></p>
+    </section>
+
+    <section class="tabpanel" data-panel="week" role="tabpanel" hidden>
+      <div class="field"><label for="wk-weather">Trời làng tuần này</label>
+        <select id="wk-weather"><option value="sunny">Nắng</option><option value="cloudy">Mây</option><option value="rain">Mưa</option></select></div>
+      <div class="field"><label for="wk-ws">Xưởng mở tháng này</label><select id="wk-ws"></select></div>
+      <div><button type="button" class="btn primary" id="wk-save">Lưu</button></div>
+      <hr>
+      <div class="option">
+        <h3>Làm lại từ đầu</h3>
+        <p>Xoá toàn bộ nhà của làng thật. Làng mẫu không bị ảnh hưởng.</p>
+        <div><button type="button" class="btn danger" id="wk-wipe">Xoá toàn bộ nhà</button></div>
+      </div>
+    </section>
+  </aside>
+
+  <div id="tip" hidden></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <button type="button" id="film-exit" hidden>Thoát quay phim<kbd>F / Esc</kbd></button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function () {
+'use strict';
+
+/* ================= Tiện ích ================= */
+const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+const D2R = Math.PI / 180;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const smooth = t => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
+const lerp = (a, b, t) => a + (b - a) * t;
+const pad = n => String(n).padStart(3, '0');
+const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase().replace(/\s+/g, ' ').trim();
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function hash2(x, z) { const s = Math.sin(x * 127.1 + z * 311.7) * 43758.5453; return s - Math.floor(s); }
+function polar(deg, r) { const a = deg * D2R; return [Math.cos(a) * r, Math.sin(a) * r]; }
+function yawTo(x, z, tx, tz) { return Math.atan2(tx - x, tz - z); }
+const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  if (attrs) for (const k in attrs) {
+    const v = attrs[k];
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v;
+    else if (k === 'style') el.setAttribute('style', v);
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat()) { if (c == null || c === false) continue; el.append(c.nodeType ? c : document.createTextNode(String(c))); }
+  return el;
+}
+let toastTimer = 0;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('is-on'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('is-on'), 3600); }
+function fmtDate(s) { if (!s || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return ''; const [y, m, d] = s.split('-'); return `${d}/${m}/${y}`; }
+function todayISO() { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); }
+
+/* ================= Dữ liệu làng ================= */
+const XOMS = [
+  { key: 'noi', name: 'Xóm Nôi', age: 'con 0–3 tuổi', ageKey: '0-3', deg: 234, roof: '#d9785c' },
+  { key: 'mam', name: 'Xóm Mầm', age: 'con 3–6 tuổi', ageKey: '3-6', deg: 306, roof: '#dda237' },
+  { key: 'tre', name: 'Xóm Tre', age: 'con 6–11 tuổi', ageKey: '6-11', deg: 18, roof: '#4d88b0' },
+  { key: 'gio', name: 'Xóm Gió', age: 'con 11–18 tuổi', ageKey: '11-18', deg: 90, roof: '#8465b0' },
+  { key: 'ban', name: 'Xóm Bạn Làng', age: 'thầy cô, ông bà', ageKey: null, deg: 162, roof: '#a3543b' }
+];
+const XOM = Object.fromEntries(XOMS.map(x => [x.key, x]));
+const AGE_KEYS = ['0-3', '3-6', '6-11', '11-18'];
+const AGE_LABEL = { '0-3': '0–3 tuổi', '3-6': '3–6 tuổi', '6-11': '6–11 tuổi', '11-18': '11–18 tuổi' };
+const AGE_XOM = { '0-3': 'noi', '3-6': 'mam', '6-11': 'tre', '11-18': 'gio' };
+const WORKSHOPS = [
+  { key: 'dinh', name: 'Đình Làng', nghe: 'Nghề Gieo Chữ', full: 'Nghề Gieo Chữ — học cùng con', q: 'Làm sao giữ được sự tò mò của con?', practice: '30 phút chơi-học không áp lực', show: 'Giá sách, cửa sổ sáng đèn', deg: 270 },
+  { key: 'gieng', name: 'Giếng Làng', nghe: 'Nghề Lặng', full: 'Nghề Lặng — hiểu mình', q: 'Mình đang cảm thấy gì trước khi phản ứng với con?', practice: '21 Ngày Tỉnh Thức Cùng Con', show: 'Giếng nước trong sân', deg: 330 },
+  { key: 'goc-da', name: 'Gốc Đa', nghe: 'Nghề Nghe', full: 'Nghề Nghe — kết nối', q: 'Con được nghe trọn vẹn bao lâu mỗi ngày?', practice: '15 phút "chỉ có con" mỗi tối', show: 'Ghế tre trước hiên', deg: 30 },
+  { key: 'vuon', name: 'Vườn Rau', nghe: 'Nghề Vườn', full: 'Nghề Vườn — nếp sống lành', q: 'Giấc ngủ, bữa ăn, màn hình, chơi ngoài trời đã cân bằng chưa?', practice: '7 ngày không màn hình trước giờ ngủ', show: 'Vườn rau sau nhà', deg: 90 },
+  { key: 'bep', name: 'Bếp Lửa', nghe: 'Nghề Lửa', full: 'Nghề Lửa — văn hoá gia đình', q: 'Nhà mình có nghi thức nào để con nhớ mãi?', practice: 'Một bữa cơm kể chuyện ông bà mỗi tuần', show: 'Bếp có khói', deg: 150 },
+  { key: 'luy-tre', name: 'Lũy Tre', nghe: 'Nghề Rào', full: 'Nghề Rào — ranh giới yêu thương', q: 'Nói "không" thế nào để con vẫn thấy được thương?', practice: 'Viết 3 luật nhà cùng con', show: 'Hàng rào tre', deg: 210 }
+];
+const WS = Object.fromEntries(WORKSHOPS.map(w => [w.key, w]));
+const PUBLICS = [
+  { key: 'thu-vien', name: 'Thư viện truyện', product: 'Maya Universe', nghe: 'Nghề Gieo Chữ', deg: 244, wall: '#e8e0c8', roof: '#4d88b0' },
+  { key: 'san-choi', name: 'Sân chơi tiếng Anh', product: 'Magic Moment', nghe: 'Nghề Gieo Chữ', deg: 254, wall: '#f3dfb0', roof: '#5f9e45' },
+  { key: 'nha-in', name: 'Nhà in', product: 'Chuyện Của Con', nghe: 'Nghề Lửa', deg: 264, wall: '#ede3d0', roof: '#b0523a' },
+  { key: 'buu-dien', name: 'Bưu điện', product: 'Cánh Thư', nghe: 'Nghề Lửa', deg: 276, wall: '#f1d77a', roof: '#6b4a8a' },
+  { key: 'nha-tho-ho', name: 'Nhà thờ họ', product: 'Cội Nguồn', nghe: 'Nghề Lửa', deg: 286, wall: '#dfcfae', roof: '#7a3b2e' },
+  { key: 'choi-canh', name: 'Chòi canh', product: 'Sập Bẫy', nghe: 'Nghề Rào, an toàn trên mạng', deg: 296, wall: '#c9a77c', roof: '#5a4634' }
+];
+const PUB = Object.fromEntries(PUBLICS.map(p => [p.key, p]));
+const WEATHER_LABEL = { sunny: 'Nắng', cloudy: 'Mây', rain: 'Mưa' };
+const SAMPLE_GIFTS = ['Một mẹo dỗ con ngủ không cần điện thoại', 'Danh sách 10 cuốn sách tranh con mê', 'Trò chơi 15 phút không màn hình', 'Cách nói "không" mà con vẫn thấy được thương', 'Thực đơn ăn dặm một tuần', 'Câu chuyện ngày đầu con đi học', 'Bảng việc nhà cho bé 5 tuổi', 'Một câu hỏi tối nào cũng hỏi con', 'Góc đọc sách làm từ thùng giấy', 'Ba hơi thở trước khi nổi nóng', 'Lịch chơi ngoài trời cuối tuần', 'Cách kể chuyện ông bà cho con nghe'];
+
+/* Kích thước thế giới */
+const SLAB = 170, HALF = 85, R_RAIL = 52, PLAZA_R = 13, WS_R = 8.4, PUB_R = 73;
+const PATH_DEGS = [270, 342, 54, 126, 198];
+const PLOT_RINGS = [18.5, 23.5, 28.5, 33.5, 38.5, 43.5, 59, 64];
+const SPAN = 27 * D2R, PLOT_GAP = 4.7;
+
+const PLOTS = {};
+XOMS.forEach(x => {
+  const list = [], c = x.deg * D2R;
+  PLOT_RINGS.forEach((r, ri) => {
+    const n = Math.floor((2 * SPAN * r) / PLOT_GAP) + 1;
+    const ring = [];
+    for (let i = 0; i < n; i++) {
+      const a = n === 1 ? c : c - SPAN + i * (2 * SPAN / (n - 1));
+      ring.push({ x: Math.cos(a) * r, z: Math.sin(a) * r, a, r, ring: ri, d: Math.abs(a - c) });
+    }
+    ring.sort((p, q) => p.d - q.d || p.a - q.a);
+    list.push(...ring);
+  });
+  PLOTS[x.key] = list;
+});
+
+/* Làng mẫu: nhà không tên, chỉ để minh hoạ */
+function makeSample() {
+  const rnd = mulberry32(20250423);
+  const plan = [];
+  [['noi', 24], ['mam', 27], ['tre', 21], ['gio', 13], ['ban', 11]].forEach(([k, n]) => { for (let i = 0; i < n; i++) plan.push(k); });
+  for (let i = plan.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [plan[i], plan[j]] = [plan[j], plan[i]]; }
+  const start = Date.UTC(2025, 3, 23);
+  return plan.map((xom, i) => {
+    const no = i + 1;
+    let kids = [];
+    if (xom !== 'ban') {
+      const base = AGE_KEYS.indexOf(XOM[xom].ageKey);
+      kids.push(AGE_KEYS[base]);
+      if (rnd() < 0.45) kids.push(AGE_KEYS[clamp(base + (rnd() < 0.5 ? 1 : 0), 0, 3)]);
+      if (rnd() < 0.15) kids.push(AGE_KEYS[clamp(base + 1, 0, 3)]);
+      kids.sort((a, b) => AGE_KEYS.indexOf(a) - AGE_KEYS.indexOf(b));
+    }
+    const joined = new Date(start + i * 5.2 * 864e5).toISOString().slice(0, 10);
+    return {
+      no, name: 'Nhà mẫu ' + pad(no), xom, adults: xom === 'ban' ? (rnd() < 0.5 ? 1 : 2) : (rnd() < 0.8 ? 2 : 1), kids,
+      give: SAMPLE_GIFTS[i % SAMPLE_GIFTS.length], joined, smoke: rnd() < 0.55, lit: rnd() < 0.72,
+      founding: no <= 40, provisional: false, sample: true
+    };
+  });
+}
+const SAMPLE = makeSample();
+
+/* ================= Trạng thái ================= */
+const state = {
+  mode: 'sample', userPickedMode: false,
+  real: [], realLoaded: false,
+  settings: { weather: 'sunny', workshop: 'gieng' },
+  db: null, canEdit: false, registryRef: null, settingsRef: null,
+  selected: null, // số nhà
+  cam: 'overview', timeMode: 'auto', weatherMode: 'village',
+  labels: true, ink: true, spin: false, lite: false
+};
+function houses() { return state.mode === 'real' ? state.real : SAMPLE; }
+function findHouse(no) { return houses().find(h => h.no === no) || null; }
+function villageWeather() { return state.mode === 'real' ? state.settings.weather : 'sunny'; }
+function currentWorkshop() { return state.mode === 'real' ? state.settings.workshop : 'gieng'; }
+
+/* ================= Three.js ================= */
+const loadingEl = $('#loading');
+if (!window.THREE || !THREE.OrbitControls) { loadingEl.textContent = 'Chưa tải được thư viện 3D. Kiểm tra kết nối mạng rồi mở lại trang.'; loadingEl.classList.add('is-error'); return; }
+const T = THREE;
+const canvas = $('#c');
+let renderer;
+try { renderer = new T.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' }); }
+catch (e) { loadingEl.textContent = 'Trình duyệt này chưa hiển thị được mô hình 3D (WebGL đang tắt).'; loadingEl.classList.add('is-error'); return; }
+const isSmall = Math.min(window.innerWidth, window.innerHeight) < 600;
+state.lite = isSmall;
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, state.lite ? 1.5 : 2));
+renderer.shadowMap.enabled = !state.lite;
+renderer.shadowMap.type = T.PCFSoftShadowMap;
+const scene = new T.Scene();
+scene.background = new T.Color('#bfe3ee');
+scene.fog = new T.Fog('#cfe8ee', 210, 540);
+const camera = new T.PerspectiveCamera(40, 1, 0.5, 900);
+const controls = new T.OrbitControls(camera, canvas);
+controls.enableDamping = true; controls.dampingFactor = 0.08;
+controls.maxPolarAngle = 1.36; controls.minDistance = 6; controls.maxDistance = 260;
+controls.autoRotateSpeed = 0.45;
+controls.screenSpacePanning = false;
+
+const hemi = new T.HemisphereLight('#e6f4ff', '#7d6f52', 0.55); scene.add(hemi);
+const sun = new T.DirectionalLight('#fff3dc', 0.85);
+sun.position.set(60, 110, 40); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -100, right: 100, top: 100, bottom: -100, near: 10, far: 330 });
+sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.4;
+scene.add(sun); scene.add(sun.target);
+const nightLights = [new T.PointLight('#ffb55e', 0, 46, 2), new T.PointLight('#ffb55e', 0, 40, 2)];
+nightLights[0].position.set(0, 7, 0); nightLights[1].position.set(0, 6, -57);
+nightLights.forEach(l => scene.add(l));
+
+/* ---- Hình học & gộp khối ---- */
+const _e = new T.Euler(), _q = new T.Quaternion(), _p = new T.Vector3(), _s = new T.Vector3();
+function M(x = 0, y = 0, z = 0, ry = 0, sx = 1, sy = 1, sz = 1, rx = 0, rz = 0) { _e.set(rx, ry, rz, 'YXZ'); _q.setFromEuler(_e); _p.set(x, y, z); _s.set(sx, sy, sz); return new T.Matrix4().compose(_p, _q, _s); }
+const GC = {};
+function cyl(rt, rb, hh, seg) { const k = `c${rt},${rb},${hh},${seg}`; return GC[k] || (GC[k] = new T.CylinderGeometry(rt, rb, hh, seg)); }
+function cone(r, hh, seg) { const k = `k${r},${hh},${seg}`; return GC[k] || (GC[k] = new T.ConeGeometry(r, hh, seg)); }
+function ico(r, d = 0) { const k = `i${r},${d}`; return GC[k] || (GC[k] = new T.IcosahedronGeometry(r, d)); }
+const BOX = new T.BoxGeometry(1, 1, 1);
+const PYR = (() => { const g = new T.ConeGeometry(Math.SQRT1_2, 1, 4); g.rotateY(Math.PI / 4); g.translate(0, 0.5, 0); return g; })();
+const GABLE = (() => {
+  const v = [-.5, 0, .5, .5, 0, .5, 0, 1, .5, .5, 0, -.5, -.5, 0, -.5, 0, 1, -.5,
+    -.5, 0, -.5, -.5, 0, .5, 0, 1, .5, -.5, 0, -.5, 0, 1, .5, 0, 1, -.5,
+    .5, 0, .5, .5, 0, -.5, 0, 1, -.5, .5, 0, .5, 0, 1, -.5, 0, 1, .5];
+  const g = new T.BufferGeometry(); g.setAttribute('position', new T.Float32BufferAttribute(v, 3)); return g;
+})();
+const _col = new T.Color();
+function part(geom, color, m) {
+  const g = geom.index ? geom.toNonIndexed() : geom.clone();
+  ['uv', 'uv2', 'normal', 'color'].forEach(a => { if (g.attributes[a]) g.deleteAttribute(a); });
+  if (m) g.applyMatrix4(m);
+  g.computeVertexNormals();
+  const n = g.attributes.position.count, arr = new Float32Array(n * 3);
+  _col.set(color);
+  for (let i = 0; i < n; i++) { arr[i * 3] = _col.r; arr[i * 3 + 1] = _col.g; arr[i * 3 + 2] = _col.b; }
+  g.setAttribute('color', new T.BufferAttribute(arr, 3));
+  return g;
+}
+function mergeGeoms(list) {
+  let n = 0; list.forEach(g => { n += g.attributes.position.count; });
+  const pos = new Float32Array(n * 3), nor = new Float32Array(n * 3), col = new Float32Array(n * 3);
+  let o = 0;
+  list.forEach(g => { pos.set(g.attributes.position.array, o); nor.set(g.attributes.normal.array, o); col.set(g.attributes.color.array, o); o += g.attributes.position.count * 3; g.dispose(); });
+  const out = new T.BufferGeometry();
+  out.setAttribute('position', new T.BufferAttribute(pos, 3));
+  out.setAttribute('normal', new T.BufferAttribute(nor, 3));
+  out.setAttribute('color', new T.BufferAttribute(col, 3));
+  out.computeBoundingSphere();
+  return out;
+}
+class Batch {
+  constructor() { this.parts = []; this.lines = []; }
+  add(geom, color, m, outline) { const g = part(geom, color, m); this.parts.push(g); if (outline) this.lines.push(g.clone()); return this; }
+  mesh(material, opts = {}) {
+    if (!this.parts.length) return null;
+    const mesh = new T.Mesh(mergeGeoms(this.parts), material);
+    mesh.castShadow = !!opts.cast; mesh.receiveShadow = !!opts.receive;
+    this.parts = [];
+    return mesh;
+  }
+  outline() {
+    if (!this.lines.length) return null;
+    const g = mergeGeoms(this.lines); this.lines = [];
+    const e = new T.EdgesGeometry(g, 28); g.dispose();
+    const l = new T.LineSegments(e, inkMat); l.userData.ink = true; return l;
+  }
+}
+const matV = new T.MeshLambertMaterial({ vertexColors: true });
+const matVDouble = new T.MeshLambertMaterial({ vertexColors: true, side: T.DoubleSide });
+const inkMat = new T.LineBasicMaterial({ color: '#2a2622', transparent: true, opacity: 0.42 });
+const inkObjects = [];
+function addInk(l) { if (l) { scene.add(l); inkObjects.push(l); } return l; }
+function jitter(hex, k, amt = 0.06) { const c = new T.Color(hex); c.offsetHSL(0, 0, (k - 0.5) * amt); return c; }
+
+/* ---- Địa hình ---- */
+const RIVER_PTS2 = [[80, 14], [77, 27], [72, 45], [59, 63], [41, 74], [21, 85]];
+const riverCurve = new T.CatmullRomCurve3(RIVER_PTS2.map(([x, z]) => new T.Vector3(x, 0, z)));
+const riverSamples = riverCurve.getSpacedPoints(160);
+function riverDist(x, z) { let m = 1e9; for (const p of riverSamples) { const d = (p.x - x) ** 2 + (p.z - z) ** 2; if (d < m) m = d; } return Math.sqrt(m); }
+function angDeg(x, z) { let a = Math.atan2(z, x) / D2R; if (a < 0) a += 360; return a; }
+function heightAt(x, z) {
+  const r = Math.hypot(x, z);
+  if (r < 73) return 0;
+  const ramp = smooth((r - 73) / 10);
+  const edge = clamp((HALF - Math.max(Math.abs(x), Math.abs(z))) / 5, 0, 1);
+  const n = Math.sin(x * 0.13 + 0.4) * Math.cos(z * 0.11 - 0.3) + 0.55 * Math.sin(x * 0.27 + 1.3) * Math.sin(z * 0.23 + 0.7) + 0.35;
+  let hh = Math.max(0, n) * 4.4 * ramp * edge;
+  const rd = riverDist(x, z); if (rd < 10) hh *= smooth((rd - 4.5) / 5.5);
+  const a = angDeg(x, z), da = Math.abs(a - 270);
+  if (da < 40 && r < 84) hh *= smooth((da - 32) / 8);
+  return hh;
+}
+function buildTerrain() {
+  const SEG = 72;
+  const pg = new T.PlaneGeometry(SLAB, SLAB, SEG, SEG); pg.rotateX(-Math.PI / 2);
+  const p = pg.attributes.position;
+  for (let i = 0; i < p.count; i++) p.setY(i, heightAt(p.getX(i), p.getZ(i)));
+  const g = pg.toNonIndexed(); pg.dispose(); g.deleteAttribute('uv'); g.computeVertexNormals();
+  const pa = g.attributes.position.array, n = pa.length / 3, col = new Float32Array(n * 3);
+  const A = new T.Color('#74a84e'), B = new T.Color('#679d45'), C = new T.Color('#82b457'), HILL = new T.Color('#55893f'), c = new T.Color();
+  for (let t = 0; t < n; t += 3) {
+    const cx = (pa[t * 3] + pa[t * 3 + 3] + pa[t * 3 + 6]) / 3, cy = (pa[t * 3 + 1] + pa[t * 3 + 4] + pa[t * 3 + 7]) / 3, cz = (pa[t * 3 + 2] + pa[t * 3 + 5] + pa[t * 3 + 8]) / 3;
+    const k = hash2(Math.floor(cx / 4.7), Math.floor(cz / 4.7));
+    c.copy(A).lerp(k < 0.5 ? B : C, Math.abs(k - 0.5) * 0.9).lerp(HILL, clamp(cy / 4, 0, 1) * 0.7);
+    for (let v = 0; v < 3; v++) { col[(t + v) * 3] = c.r; col[(t + v) * 3 + 1] = c.g; col[(t + v) * 3 + 2] = c.b; }
+  }
+  g.setAttribute('color', new T.BufferAttribute(col, 3));
+  const mesh = new T.Mesh(g, matV); mesh.receiveShadow = true; scene.add(mesh);
+
+  const sg = new T.BoxGeometry(SLAB, 14, SLAB, 1, 7, 1).toNonIndexed(); sg.deleteAttribute('uv'); sg.translate(0, -7.06, 0); sg.computeVertexNormals();
+  const sp = sg.attributes.position.array, sn = sp.length / 3, sc = new Float32Array(sn * 3);
+  const BANDS = ['#6aa14e', '#a8784e', '#94643f', '#b0845a', '#8a5a38', '#7a4e31', '#6b432a', '#5c3a25'].map(x => new T.Color(x));
+  for (let t = 0; t < sn; t += 3) {
+    const cy = (sp[t * 3 + 1] + sp[t * 3 + 4] + sp[t * 3 + 7]) / 3;
+    const cc = cy > -0.9 ? BANDS[0] : BANDS[clamp(1 + Math.floor((-cy) / 2), 1, 7)];
+    for (let v = 0; v < 3; v++) { sc[(t + v) * 3] = cc.r; sc[(t + v) * 3 + 1] = cc.g; sc[(t + v) * 3 + 2] = cc.b; }
+  }
+  sg.setAttribute('color', new T.BufferAttribute(sc, 3));
+  scene.add(new T.Mesh(sg, matV));
+}
+function ribbonGeom(pts, halfFn, y) {
+  const pos = [];
+  const side = i => { const a = pts[Math.max(0, i - 1)], b = pts[Math.min(pts.length - 1, i + 1)]; const tx = b.x - a.x, tz = b.z - a.z, l = Math.hypot(tx, tz) || 1; return [-tz / l, tx / l]; };
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = pts[i], b = pts[i + 1], na = side(i), nb = side(i + 1), ha = halfFn(i), hb = halfFn(i + 1);
+    const aL = [a.x + na[0] * ha, a.z + na[1] * ha], aR = [a.x - na[0] * ha, a.z - na[1] * ha];
+    const bL = [b.x + nb[0] * hb, b.z + nb[1] * hb], bR = [b.x - nb[0] * hb, b.z - nb[1] * hb];
+    pos.push(aL[0], y, aL[1], bL[0], y, bL[1], aR[0], y, aR[1], aR[0], y, aR[1], bL[0], y, bL[1], bR[0], y, bR[1]);
+  }
+  const g = new T.BufferGeometry(); g.setAttribute('position', new T.Float32BufferAttribute(pos, 3)); g.computeVertexNormals(); return g;
+}
+const waterMat = new T.MeshLambertMaterial({ color: '#4d9fbc', side: T.DoubleSide });
+let riverSparkles, riverSparkleData = [];
+function buildRiver() {
+  const pts = riverCurve.getSpacedPoints(120);
+  const half = i => 3.1 + Math.sin(i * 0.17) * 0.6;
+  const bank = new T.Mesh(ribbonGeom(pts, i => half(i) + 1.5, 0.05), new T.MeshLambertMaterial({ color: '#d7c89b', side: T.DoubleSide }));
+  bank.receiveShadow = true; scene.add(bank);
+  const water = new T.Mesh(ribbonGeom(pts, half, 0.13), waterMat); water.receiveShadow = true; scene.add(water);
+  const end = pts[pts.length - 1], hw = half(pts.length - 1) + 0.2;
+  const fg = new T.BufferGeometry();
+  const top = new T.Color('#4d9fbc'), bot = new T.Color('#cfeaf2');
+  fg.setAttribute('position', new T.Float32BufferAttribute([end.x - hw, 0.13, HALF + 0.03, end.x + hw, 0.13, HALF + 0.03, end.x - hw, -13.6, HALF + 0.03, end.x - hw, -13.6, HALF + 0.03, end.x + hw, 0.13, HALF + 0.03, end.x + hw, -13.6, HALF + 0.03], 3));
+  fg.setAttribute('color', new T.Float32BufferAttribute([top.r, top.g, top.b, top.r, top.g, top.b, bot.r, bot.g, bot.b, bot.r, bot.g, bot.b, top.r, top.g, top.b, bot.r, bot.g, bot.b], 3));
+  scene.add(new T.Mesh(fg, new T.MeshBasicMaterial({ vertexColors: true, side: T.DoubleSide })));
+  riverSparkles = new T.InstancedMesh(BOX, new T.MeshBasicMaterial({ color: '#eaf7fb', transparent: true, opacity: 0.75 }), 18);
+  for (let i = 0; i < 18; i++) riverSparkleData.push({ u: i / 18, off: (hash2(i, 3) - 0.5) * 3.6, sp: 0.009 + hash2(i, 7) * 0.006 });
+  scene.add(riverSparkles);
+}
+
+/* ---- Tĩnh: sân, đường, ray, ga, xưởng, công trình ---- */
+const lanternSpots = [];
+let stationSign = null, hearthFire = null;
+const smokeSources = []; // nguồn khói cố định (bếp lửa); khói nhà được thêm khi dựng nhà
+const hitStatic = []; // mesh vô hình để chọn
+const hitMat = new T.MeshBasicMaterial({ visible: false });
+function addHit(geom, m, data) { const mesh = new T.Mesh(geom, hitMat); mesh.applyMatrix4(m); mesh.userData.pick = data; scene.add(mesh); hitStatic.push(mesh); return mesh; }
+function person(b, m, clothes, skin, scale, hair) {
+  const s = scale;
+  b.add(cyl(0.15 * s, 0.2 * s, 0.56 * s, 6), clothes, m.clone().multiply(M(0, 0.28 * s + 0.06 * s, 0)));
+  b.add(cyl(0.05 * s, 0.05 * s, 0.14 * s, 4), '#3b3029', m.clone().multiply(M(-0.07 * s, 0.05 * s, 0)));
+  b.add(cyl(0.05 * s, 0.05 * s, 0.14 * s, 4), '#3b3029', m.clone().multiply(M(0.07 * s, 0.05 * s, 0)));
+  b.add(ico(0.16 * s, 0), skin, m.clone().multiply(M(0, 0.78 * s, 0)));
+  b.add(ico(0.165 * s, 0), hair, m.clone().multiply(M(0, 0.84 * s, -0.03 * s, 0, 1, 0.62, 1)));
+}
+const CLOTHES = ['#d0574f', '#3f7fbf', '#e0a33b', '#5b9e5a', '#8a63b8', '#e07a9e', '#3a9e9b', '#c86b3c', '#f2efe4'];
+const SKIN = ['#f1cba6', '#e5b78e', '#d7a47b'];
+const HAIR = ['#2b2320', '#3a2a22', '#1f1b19', '#5a4232'];
+
+function buildStatic() {
+  const flat = new Batch();
+  const st = new Batch();
+  flat.add(cyl(PLAZA_R, PLAZA_R, 0.1, 44), '#dcc9a0', M(0, 0.05, 0));
+  flat.add(cyl(PLAZA_R - 0.6, PLAZA_R - 0.6, 0.1, 44), '#e3d3ae', M(0, 0.07, 0));
+  PATH_DEGS.forEach(dg => {
+    const a = dg * D2R, r0 = PLAZA_R - 0.5, r1 = dg === 270 ? 70 : 66.5, rm = (r0 + r1) / 2;
+    flat.add(BOX, '#cdb383', M(Math.cos(a) * rm, 0.045, Math.sin(a) * rm, Math.atan2(Math.cos(a), Math.sin(a)), 1.9, 0.09, r1 - r0));
+  });
+  const ringG = new T.RingGeometry(46.95, 48.15, 140); ringG.rotateX(-Math.PI / 2);
+  flat.add(ringG, '#cdb383', M(0, 0.04, 0));
+  const ball = new T.RingGeometry(R_RAIL - 1.5, R_RAIL + 1.5, 180); ball.rotateX(-Math.PI / 2);
+  flat.add(ball, '#a8a193', M(0, 0.06, 0));
+  const flatMesh = flat.mesh(matVDouble, { receive: true }); scene.add(flatMesh);
+
+  /* ray tàu */
+  const railMat = new T.MeshLambertMaterial({ color: '#8e9095' });
+  [R_RAIL - 0.55, R_RAIL + 0.55].forEach(r => { const tg = new T.TorusGeometry(r, 0.085, 4, 240); tg.rotateX(Math.PI / 2); const m = new T.Mesh(tg, railMat); m.position.y = 0.28; scene.add(m); });
+  const NS = 230, sleepers = new T.InstancedMesh(BOX, new T.MeshLambertMaterial({ color: '#6b4c35' }), NS);
+  for (let i = 0; i < NS; i++) { const a = i / NS * Math.PI * 2; sleepers.setMatrixAt(i, M(Math.cos(a) * R_RAIL, 0.16, Math.sin(a) * R_RAIL, -a, 2.4, 0.13, 0.36)); }
+  sleepers.receiveShadow = true; scene.add(sleepers);
+
+  /* Ao làng giữa sân */
+  st.add(cyl(3.7, 3.7, 0.1, 22), '#4d9fbc', M(0, 0.12, 0));
+  const rim = new T.TorusGeometry(3.8, 0.28, 4, 22); rim.rotateX(Math.PI / 2);
+  st.add(rim, '#a9a598', M(0, 0.16, 0));
+  [[1.4, 0.6, 0.5], [-1.2, 1.3, 0.42], [0.3, -1.7, 0.46], [-1.8, -0.8, 0.36], [2.1, -1.2, 0.34], [-0.4, 2.2, 0.38], [1.1, 1.9, 0.3]].forEach(([x, z, r], i) => {
+    st.add(cyl(r, r, 0.04, 7), i % 2 ? '#4f9a45' : '#5eaa4f', M(x, 0.19, z));
+    if (i < 4) { st.add(cone(0.16, 0.34, 5), '#ea92ad', M(x + 0.1, 0.36, z + 0.05)); st.add(cone(0.1, 0.2, 5), '#f7c7d4', M(x + 0.1, 0.46, z + 0.05, 0, 1, 1, 1, Math.PI)); }
+  });
+
+  /* Xưởng nghề */
+  WORKSHOPS.forEach(w => {
+    const [x, z] = polar(w.deg, WS_R), yaw = yawTo(x, z, 0, 0), base = M(x, 0, z, yaw);
+    const L = (m) => base.clone().multiply(m);
+    buildWorkshop(w.key, st, L);
+    addHit(cyl(2.6, 2.6, 5, 8), M(x, 2.5, z), { type: 'ws', key: w.key });
+  });
+
+  /* Đèn lồng */
+  PATH_DEGS.forEach((dg, pi) => {
+    [17, 25, 33, 41].forEach((r, i) => {
+      const a = dg * D2R, side = (i % 2 ? 1 : -1) * 1.65, px = Math.cos(a) * r - Math.sin(a) * side, pz = Math.sin(a) * r + Math.cos(a) * side;
+      st.add(BOX, '#5b4636', M(px, 0.95, pz, 0, 0.12, 1.9, 0.12));
+      lanternSpots.push([px, 2.05, pz]);
+    });
+  });
+  for (let i = 0; i < 12; i++) { const dg = i * 30 + 15; if (PATH_DEGS.some(p => Math.abs(((dg - p + 540) % 360) - 180) < 7)) continue; const a = dg * D2R, r = PLAZA_R + 0.4; const px = Math.cos(a) * r, pz = Math.sin(a) * r; st.add(BOX, '#5b4636', M(px, 0.95, pz, 0, 0.12, 1.9, 0.12)); lanternSpots.push([px, 2.05, pz]); }
+
+  /* Ga Làng */
+  const gz = -(R_RAIL + 2.9);
+  st.add(BOX, '#c9bda3', M(0, 0.32, gz, 0, 14, 0.64, 3.2), true);
+  st.add(BOX, '#efe3c8', M(0, 1.3 + 0.64, gz - 3.7, 0, 6.4, 2.6, 3.2), true);
+  st.add(GABLE, '#b0523a', M(0, 3.24, gz - 3.7, 0, 7.2, 1.3, 3.9).multiply(M(0, 0, 0, Math.PI / 2)), true);
+  st.add(BOX, '#7b4f33', M(0, 1.2 + 0.64, gz - 2.08, 0, 0.9, 1.6, 0.08));
+  [-2.2, 2.2].forEach(x => st.add(BOX, '#a9c9d6', M(x, 1.7 + 0.64, gz - 2.08, 0, 0.8, 0.7, 0.06)));
+  [-4, 4].forEach(x => { st.add(BOX, '#6d5237', M(x, 0.9, gz + 0.6, 0, 1.6, 0.1, 0.45)); st.add(BOX, '#6d5237', M(x, 0.72, gz + 0.6, 0, 0.12, 0.3, 0.4)); });
+  [-6.2, 6.2].forEach(x => { st.add(BOX, '#3d3a37', M(x, 1.9, gz + 1.2, 0, 0.12, 2.6, 0.12)); lanternSpots.push([x, 3.25, gz + 1.2]); });
+  person(st, M(-3.1, 0.64, gz + 0.2, Math.PI * 0.1), '#3f7fbf', SKIN[0], 1, HAIR[0]);
+  person(st, M(-2.6, 0.64, gz + 0.35, -Math.PI * 0.1), '#e0a33b', SKIN[1], 0.62, HAIR[1]);
+  person(st, M(3.4, 0.64, gz + 0.1, 0), '#5b9e5a', SKIN[2], 1, HAIR[2]);
+  addHit(BOX, M(0, 2, gz - 1.5, 0, 14, 4.5, 8), { type: 'station' });
+
+  /* Công trình chung */
+  PUBLICS.forEach((p, i) => {
+    const [x, z] = polar(p.deg, PUB_R), yaw = yawTo(x, z, 0, 0), base = M(x, 0, z, yaw);
+    const L = (m) => base.clone().multiply(m);
+    buildPublic(p, st, L, i);
+    addHit(BOX, base.clone().multiply(M(0, 2.5, 0, 0, 5.4, 5.5, 5)), { type: 'pub', key: p.key });
+  });
+
+  /* Mạch nguồn đầu sông */
+  [[82, 11, 1.5], [78.5, 10, 1.1], [83.5, 15.5, 1.2], [80.5, 17.8, 0.9], [76.8, 13.2, 0.8]].forEach(([x, z, r], i) => st.add(ico(r, 0), i % 2 ? '#9a978d' : '#aaa79c', M(x, r * 0.45, z, i)));
+
+  const stMesh = st.mesh(matV, { cast: true, receive: true }); scene.add(stMesh);
+  addInk(st.outline());
+}
+
+function buildWorkshop(key, b, L) {
+  if (key === 'gieng') {
+    b.add(cyl(2.2, 2.2, 0.08, 12), '#cfc5ad', L(M(0, 0.04, 0)));
+    b.add(cyl(0.95, 1.05, 0.8, 10), '#9c9a91', L(M(0, 0.4, 0)), true);
+    b.add(cyl(0.74, 0.74, 0.06, 10), '#2d5d70', L(M(0, 0.77, 0)));
+    [-0.98, 0.98].forEach(x => b.add(BOX, '#7a5a3c', L(M(x, 1.1, 0, 0, 0.16, 2.2, 0.16)), true));
+    b.add(GABLE, '#8c4a32', L(M(0, 2.15, 0, 0, 2.7, 0.75, 1.6)), true);
+    b.add(BOX, '#6b5a4a', L(M(0, 1.9, 0, 0, 2.0, 0.08, 0.08)));
+    b.add(cyl(0.18, 0.15, 0.3, 7), '#8a6a45', L(M(0.2, 1.35, 0.15)));
+    b.add(BOX, '#6d5237', L(M(0, 0.45, 1.6, 0, 1.6, 0.1, 0.42)));
+  } else if (key === 'goc-da') {
+    b.add(cyl(0.55, 0.9, 3.4, 7), '#6d5237', L(M(0, 1.7, 0)), true);
+    [[0.9, 0.4], [-0.8, 0.6], [0.3, -0.9], [-0.5, -0.7]].forEach(([x, z], i) => b.add(cyl(0.12, 0.16, 2.6, 5), '#6d5237', L(M(x, 1.3, z, 0, 1, 1, 1, z * 0.18, -x * 0.18))));
+    [[0, 4.5, 0, 2.5, '#3f7a3a'], [1.9, 3.9, 0.6, 2.0, '#4a8a40'], [-1.7, 4.0, -0.4, 2.1, '#3a6f35'], [0.3, 5.0, -1.5, 1.8, '#52914a'], [-0.6, 3.7, 1.7, 1.7, '#467f3d'], [1.2, 4.9, 1.1, 1.5, '#4d8c43']].forEach(([x, y, z, s, c]) => b.add(ico(1, 0), c, L(M(x, y, z, x, s, s * 0.85, s))));
+    b.add(BOX, '#8a6a45', L(M(0, 0.48, 2.0, 0, 2.2, 0.1, 0.55)));
+    [-0.9, 0.9].forEach(x => b.add(BOX, '#6d5237', L(M(x, 0.24, 2.0, 0, 0.1, 0.48, 0.45))));
+  } else if (key === 'luy-tre') {
+    for (let i = 0; i < 16; i++) {
+      const a = i * 2.4, r = 0.3 + (i % 5) * 0.32, x = Math.cos(a) * r, z = Math.sin(a) * r, hh = 4.8 + hash2(i, 2) * 2.4;
+      b.add(cyl(0.07, 0.09, hh, 5), i % 3 ? '#a8b858' : '#8ea64a', L(M(x, hh / 2, z, 0, 1, 1, 1, Math.sin(a) * 0.08, Math.cos(a) * 0.08)));
+      b.add(cone(0.45, 1.3, 5), i % 2 ? '#6f9a3e' : '#7fa947', L(M(x + Math.cos(a) * 0.3, hh - 0.1, z + Math.sin(a) * 0.3, a, 1, 1, 1, 0.5, 0)));
+    }
+    for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2; b.add(BOX, '#b89a5c', L(M(Math.cos(a) * 2.2, 0.4, Math.sin(a) * 2.2, -a, 0.1, 0.8, 0.1))); }
+    const ring = new T.TorusGeometry(2.2, 0.04, 3, 24); ring.rotateX(Math.PI / 2);
+    b.add(ring, '#b89a5c', L(M(0, 0.62, 0)));
+  } else if (key === 'dinh') {
+    b.add(BOX, '#b9ad96', L(M(0, 0.25, 0, 0, 5.8, 0.5, 4.2)), true);
+    [-2.3, -0.78, 0.78, 2.3].forEach(x => [-1.55, 1.55].forEach(z => b.add(cyl(0.14, 0.14, 2.1, 6), '#9c3b2a', L(M(x, 1.55, z)))));
+    b.add(BOX, '#dcc8a0', L(M(0, 1.45, -1.45, 0, 4.8, 1.9, 0.2)), true);
+    b.add(BOX, '#d8a93e', L(M(0, 2.0, 1.56, 0, 1.4, 0.34, 0.06)));
+    b.add(PYR, '#6e3a2c', L(M(0, 2.55, 0, 0, 6.6, 1.55, 5.0)), true);
+    b.add(PYR, '#7d4332', L(M(0, 3.7, 0, 0, 3.0, 0.9, 2.2)), true);
+    b.add(BOX, '#d4a33c', L(M(0, 4.55, 0, 0, 1.6, 0.16, 0.22)));
+    [[-3.1, -2.35], [3.1, -2.35], [-3.1, 2.35], [3.1, 2.35]].forEach(([x, z]) => b.add(cone(0.1, 0.7, 4), '#d4a33c', L(M(x, 2.75, z, 0, 1, 1, 1, z > 0 ? 0.7 : -0.7, x > 0 ? -0.7 : 0.7))));
+  } else if (key === 'vuon') {
+    [-1.1, 0, 1.1].forEach((z, bi) => {
+      b.add(BOX, '#7a5236', L(M(0, 0.13, z, 0, 3.4, 0.26, 0.8)));
+      for (let i = 0; i < 6; i++) b.add(ico(0.22, 0), ['#5da84a', '#74b957', '#4f9440'][(i + bi) % 3], L(M(-1.35 + i * 0.54, 0.38, z, i)));
+    });
+    b.add(BOX, '#8a6a45', L(M(1.9, 0.9, -0.2, 0, 0.09, 1.8, 0.09)));
+    b.add(BOX, '#b84a3a', L(M(1.9, 1.3, -0.2, 0, 0.9, 0.09, 0.09)));
+    b.add(ico(0.2, 0), '#e2c27a', L(M(1.9, 1.85, -0.2)));
+    b.add(cone(0.34, 0.26, 7), '#c9a24a', L(M(1.9, 2.05, -0.2)));
+    [[-1.9, 0, 0.06, 3.1], [2.3, 0, 0.06, 3.1]].forEach(([x, z, w, d]) => b.add(BOX, '#b89a5c', L(M(x, 0.35, z, 0, w, 0.5, d))));
+  } else if (key === 'bep') {
+    b.add(BOX, '#cfa979', L(M(0, 0.75, -0.4, 0, 2.5, 1.5, 2.0)), true);
+    b.add(PYR, '#d9b25a', L(M(0, 1.5, -0.4, 0, 3.3, 1.35, 2.8)), true);
+    b.add(BOX, '#6a4630', L(M(0, 0.6, 0.62, 0, 0.7, 1.1, 0.06)));
+    for (let i = 0; i < 7; i++) { const a = i / 7 * Math.PI * 2; b.add(ico(0.2, 0), '#8f8c84', L(M(Math.cos(a) * 0.55, 0.12, 1.9 + Math.sin(a) * 0.55, i))); }
+    b.add(cyl(0.3, 0.22, 0.36, 8), '#2f2a26', L(M(0, 0.62, 1.9)));
+    const fp = new T.Vector3(0, 0.25, 1.9).applyMatrix4(L(new T.Matrix4()));
+    hearthFire = fp;
+    const top = new T.Vector3(0, 1.0, 1.9).applyMatrix4(L(new T.Matrix4()));
+    smokeSources.push({ x: top.x, y: top.y, z: top.z, n: 4 });
+  }
+}
+function buildPublic(p, b, L, i) {
+  const k = p.key;
+  if (k === 'choi-canh') {
+    [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([x, z]) => b.add(BOX, '#6d5237', L(M(x, 1.9, z, 0, 0.18, 3.8, 0.18)), true));
+    b.add(BOX, '#8a6a45', L(M(0, 3.8, 0, 0, 2.6, 0.18, 2.6)), true);
+    b.add(BOX, p.wall, L(M(0, 4.45, 0, 0, 2.0, 1.1, 2.0)), true);
+    b.add(PYR, p.roof, L(M(0, 5.0, 0, 0, 3.0, 1.3, 3.0)), true);
+    for (let s = 0; s < 6; s++) b.add(BOX, '#8a6a45', L(M(0, 0.4 + s * 0.6, 1.35, 0, 0.8, 0.06, 0.08)));
+    return;
+  }
+  if (k === 'san-choi') {
+    [[-1.4, -1.1], [1.4, -1.1], [-1.4, 1.1], [1.4, 1.1]].forEach(([x, z]) => b.add(BOX, '#8a6a45', L(M(x, 1.1, z, 0, 0.16, 2.2, 0.16)), true));
+    b.add(PYR, p.roof, L(M(0, 2.2, 0, 0, 3.8, 1.2, 3.1)), true);
+    b.add(BOX, '#e0a33b', L(M(2.6, 0.7, 0.4, 0, 0.6, 0.08, 2.2, 0.55)));
+    b.add(BOX, '#6d5237', L(M(2.6, 0.7, -0.8, 0, 0.5, 1.4, 0.3)));
+    b.add(cyl(1.4, 1.4, 0.06, 16), '#e9d9ae', L(M(0, 0.05, 0)));
+    return;
+  }
+  const w = k === 'thu-vien' ? 4.4 : 3.6, d = 3, wh = 2.2;
+  b.add(BOX, p.wall, L(M(0, wh / 2, 0, 0, w, wh, d)), true);
+  if (k === 'nha-tho-ho') {
+    b.add(BOX, '#b9ad96', L(M(0, 0.15, 0.3, 0, w + 1, 0.3, d + 1.2)));
+    b.add(PYR, p.roof, L(M(0, wh, 0, 0, w + 1.2, 1.2, d + 1)), true);
+    b.add(PYR, p.roof, L(M(0, wh + 1.0, 0, 0, w * 0.55, 0.7, d * 0.55)), true);
+    [[-w / 2 - 0.5, -d / 2 - 0.4], [w / 2 + 0.5, -d / 2 - 0.4], [-w / 2 - 0.5, d / 2 + 0.4], [w / 2 + 0.5, d / 2 + 0.4]].forEach(([x, z]) => b.add(cone(0.08, 0.5, 4), '#d4a33c', L(M(x, wh + 0.15, z, 0, 1, 1, 1, z > 0 ? 0.7 : -0.7, x > 0 ? -0.7 : 0.7))));
+    b.add(cyl(0.3, 0.22, 0.5, 8), '#8f6a3a', L(M(0, 0.25, d / 2 + 1.3)));
+  } else {
+    b.add(GABLE, p.roof, L(M(0, wh, 0, 0, w + 0.5, 1.2, d + 0.5).multiply(M(0, 0, 0, Math.PI / 2))), true);
+  }
+  b.add(BOX, '#6a4630', L(M(0, 0.55, d / 2 + 0.02, 0, 0.7, 1.1, 0.06)));
+  [-1, 1].forEach(s => b.add(BOX, '#a9c9d6', L(M(s * (w / 2 - 0.7), 1.3, d / 2 + 0.02, 0, 0.6, 0.5, 0.05))));
+  if (k === 'thu-vien') ['#d0574f', '#3f7fbf', '#e0a33b', '#5b9e5a', '#8a63b8'].forEach((c, j) => b.add(BOX, c, L(M(-0.9 + j * 0.45, 1.95, d / 2 + 0.03, 0, 0.3, 0.2, 0.05))));
+  if (k === 'nha-in') { b.add(BOX, '#8a7a6c', L(M(w / 4, wh + 1.2, -0.4, 0, 0.4, 1.4, 0.4))); b.add(BOX, '#f5f1e6', L(M(-1.5, 0.3, d / 2 + 0.9, 0, 0.8, 0.6, 0.6))); }
+  if (k === 'buu-dien') { b.add(cyl(0.22, 0.22, 1.1, 8), '#c8402f', L(M(1.3, 0.55, d / 2 + 1.0))); b.add(BOX, '#c8402f', L(M(1.3, 1.15, d / 2 + 1.0, 0, 0.46, 0.26, 0.46))); }
+}
+
+/* ---- Rừng & cây ---- */
+const trunkMat = new T.MeshLambertMaterial({ color: '#6d5237' });
+const crownMat = new T.MeshLambertMaterial({ color: '#ffffff' });
+const TRUNK_G = cyl(0.14, 0.2, 1, 5).clone().translate(0, 0.5, 0);
+const PINE_G = new T.ConeGeometry(1, 2.4, 6).translate(0, 1.2, 0);
+const ROUND_G = new T.IcosahedronGeometry(1, 0);
+const CROWNS = ['#3f7d3a', '#4b8c40', '#5a9a47', '#356f34', '#6aa24c', '#2f6634'].map(c => new T.Color(c));
+function makeTreeMeshes(cap) {
+  const trunk = new T.InstancedMesh(TRUNK_G, trunkMat, cap);
+  const pine = new T.InstancedMesh(PINE_G, crownMat, cap);
+  const round = new T.InstancedMesh(ROUND_G, crownMat, cap);
+  [pine, round].forEach(m => { m.instanceColor = new T.InstancedBufferAttribute(new Float32Array(cap * 3).fill(0.4), 3); });
+  [trunk, pine, round].forEach(m => { m.castShadow = true; m.receiveShadow = true; m.count = 0; scene.add(m); });
+  return { trunk, pine, round };
+}
+function fillTrees(set, list) {
+  let t = 0, p = 0, r = 0;
+  list.forEach(tr => {
+    const s = tr.s, y = tr.y || 0;
+    set.trunk.setMatrixAt(t++, M(tr.x, y, tr.z, 0, s, s * (tr.pine ? 1.2 : 1.6), s));
+    const c = CROWNS[tr.c % CROWNS.length];
+    if (tr.pine) { set.pine.setMatrixAt(p, M(tr.x, y + s * 0.9, tr.z, tr.x, s * 1.05, s * 1.1, s * 1.05)); set.pine.setColorAt(p++, c); }
+    else { set.round.setMatrixAt(r, M(tr.x, y + s * 2.1, tr.z, tr.x * 3, s * 1.25, s * 1.1, s * 1.25)); set.round.setColorAt(r++, c); }
+  });
+  set.trunk.count = t; set.pine.count = p; set.round.count = r;
+  [set.trunk, set.pine, set.round].forEach(m => { m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true; });
+}
+function buildForest() {
+  const list = [], rnd = mulberry32(99);
+  for (let gx = -HALF + 2; gx <= HALF - 2; gx += 4.2) for (let gz = -HALF + 2; gz <= HALF - 2; gz += 4.2) {
+    const x = gx + (rnd() - 0.5) * 3.2, z = gz + (rnd() - 0.5) * 3.2, r = Math.hypot(x, z);
+    if (Math.abs(x) > HALF - 1.5 || Math.abs(z) > HALF - 1.5) continue;
+    if (r < 72.5) continue;
+    const a = angDeg(x, z);
+    if (Math.abs(a - 270) < 34 && r < 82) continue;
+    if (riverDist(x, z) < 6.5) continue;
+    if (Math.hypot(x - 80, z - 14) < 6) continue;
+    if (rnd() < 0.18) continue;
+    list.push({ x, z, y: heightAt(x, z) - 0.1, s: 0.8 + rnd() * 0.75, pine: rnd() < 0.55, c: Math.floor(rnd() * 6) });
+  }
+  const set = makeTreeMeshes(list.length + 4); fillTrees(set, list);
+}
+const plotTrees = makeTreeMeshes(PLOT_RINGS.length * 20 * 5);
+
+/* ---- Nhà ở ---- */
+const WALLS = ['#f1e6cf', '#efe0c2', '#f4ead8', '#e9dcc0', '#f2e3cb', '#ebe2cf'];
+const DOORS = ['#7b4f33', '#6a4630', '#8a5a3a', '#5e6f4f'];
+const winLitMat = new T.MeshBasicMaterial({ color: '#a9c9d6' });
+const winDarkMat = new T.MeshBasicMaterial({ color: '#a9c9d6' });
+const houseObjs = { mesh: null, lit: null, dark: null, ink: null, hit: null, markers: null, list: [] };
+const houseSmoke = [];
+function disposeObj(o) { if (!o) return; scene.remove(o); if (o.geometry) o.geometry.dispose(); }
+function membersOf(hh) { return (hh.adults || 0) + (hh.kids ? hh.kids.length : 0); }
+function buildHouses() {
+  ['mesh', 'lit', 'dark', 'ink', 'hit', 'markers'].forEach(k => { disposeObj(houseObjs[k]); houseObjs[k] = null; });
+  const idx = inkObjects.indexOf(houseObjs._ink); if (idx >= 0) inkObjects.splice(idx, 1);
+  houseSmoke.length = 0;
+  const list = houses();
+  const by = {}; XOMS.forEach(x => { by[x.key] = []; });
+  list.forEach(hh => { (by[hh.xom] || by.noi).push(hh); });
+  const body = new Batch(), lit = new Batch(), dark = new Batch(), mark = new Batch();
+  const placed = [], freeTrees = [];
+  XOMS.forEach(x => {
+    const arr = by[x.key].slice().sort((a, b) => a.no - b.no), plots = PLOTS[x.key];
+    arr.forEach((hh, i) => { if (i < plots.length) placed.push({ hh, p: plots[i] }); });
+    plots.slice(arr.length).forEach((p, j) => {
+      if (j < 2) {
+        const yaw = yawTo(p.x, p.z, 0, 0), base = M(p.x, 0, p.z, yaw);
+        [[-1.3, -1], [1.3, -1], [-1.3, 1], [1.3, 1]].forEach(([sx, sz]) => mark.add(BOX, '#b08a55', base.clone().multiply(M(sx, 0.3, sz, 0, 0.1, 0.6, 0.1))));
+        [[0, -1, 2.6, 0.03], [0, 1, 2.6, 0.03]].forEach(([sx, sz, w, dd]) => mark.add(BOX, '#e8dcc0', base.clone().multiply(M(sx, 0.5, sz, 0, w, 0.03, dd))));
+        [[-1.3, 0], [1.3, 0]].forEach(([sx, sz]) => mark.add(BOX, '#e8dcc0', base.clone().multiply(M(sx, 0.5, sz, 0, 0.03, 0.03, 2))));
+        mark.add(BOX, '#d9ccab', base.clone().multiply(M(0, 0.02, 0, 0, 2.6, 0.04, 2)));
+      } else {
+        const k = hash2(p.x, p.z);
+        if (k < 0.62) freeTrees.push({ x: p.x + (k - 0.3) * 1.5, z: p.z + (hash2(p.z, p.x) - 0.5) * 1.5, s: 0.75 + k * 0.5, pine: k < 0.3, c: Math.floor(k * 60) });
+      }
+    });
+  });
+  fillTrees(plotTrees, freeTrees);
+
+  const hit = new T.InstancedMesh(BOX, hitMat, Math.max(1, placed.length));
+  hit.count = placed.length;
+  houseObjs.list = [];
+  placed.forEach(({ hh, p }, i) => {
+    const k = hash2(hh.no * 1.37, 7.1), mem = membersOf(hh);
+    const w = 2.25 + 0.18 * clamp(mem - 2, 0, 4), d = 2.1, wh = 1.45, rh = 0.95 + 0.08 * clamp(mem - 2, 0, 4);
+    const yaw = yawTo(p.x, p.z, 0, 0), base = M(p.x, 0, p.z, yaw);
+    const L = m => base.clone().multiply(m);
+    const roofCol = jitter(XOM[hh.xom].roof, k, 0.1);
+    body.add(BOX, WALLS[Math.floor(k * WALLS.length)], L(M(0, wh / 2, 0, 0, w, wh, d)), true);
+    if (k < 0.3) body.add(PYR, roofCol, L(M(0, wh, 0, 0, w + 0.55, rh, d + 0.5)), true);
+    else body.add(GABLE, roofCol, L(M(0, wh, 0, 0, w + 0.55, rh, d + 0.45).multiply(M(0, 0, 0, Math.PI / 2))), true);
+    body.add(BOX, '#8a7a6c', L(M(w * 0.26, wh + rh * 0.45, -0.3, 0, 0.3, 0.85, 0.3)), true);
+    body.add(BOX, DOORS[Math.floor(hash2(hh.no, 2) * DOORS.length)], L(M(0, 0.43, d / 2 + 0.02, 0, 0.5, 0.86, 0.06)));
+    body.add(BOX, '#d6c49b', L(M(0, 0.025, d / 2 + 0.6, 0, 0.75, 0.05, 1.1)));
+    const wins = hh.lit ? lit : dark;
+    [-1, 1].forEach(s => wins.add(BOX, '#ffffff', L(M(s * (w / 2 - 0.46), 0.95, d / 2 + 0.03, 0, 0.42, 0.36, 0.04))));
+    [-1, 1].forEach(s => wins.add(BOX, '#ffffff', L(M(s * (w / 2 + 0.03), 0.95, 0, 0, 0.04, 0.36, 0.44))));
+    // thành viên trong nhà
+    const fam = [];
+    for (let a = 0; a < Math.min(hh.adults || 0, 6); a++) fam.push(1);
+    (hh.kids || []).slice(0, 6).forEach(ag => fam.push(ag === '11-18' ? 0.82 : ag === '6-11' ? 0.7 : ag === '3-6' ? 0.58 : 0.48));
+    const perRow = 6;
+    fam.forEach((s, j) => {
+      const row = Math.floor(j / perRow), col = j % perRow, n = Math.min(perRow, fam.length - row * perRow);
+      const fx = (col - (n - 1) / 2) * 0.44, fz = d / 2 + 1.05 + row * 0.45;
+      person(body, L(M(fx, 0, fz, (hash2(j, hh.no) - 0.5) * 0.6)), CLOTHES[Math.floor(hash2(hh.no, j) * CLOTHES.length)], SKIN[(hh.no + j) % 3], s, HAIR[(hh.no + j) % 4]);
+    });
+    // mỗi con một cây non sau nhà
+    const kids = hh.kids || [];
+    if (kids.length) kids.slice(0, 6).forEach((ag, j) => {
+      const s = ag === '11-18' ? 1.05 : ag === '6-11' ? 0.85 : ag === '3-6' ? 0.65 : 0.45;
+      const tx = (j - (Math.min(kids.length, 6) - 1) / 2) * 0.95, tz = -d / 2 - 0.8;
+      body.add(cyl(0.06 * s + 0.03, 0.09 * s + 0.03, 0.9 * s, 5), '#6d5237', L(M(tx, 0.45 * s, tz)));
+      body.add(ico(0.5 * s + 0.12, 0), ['#5fa34a', '#6db552', '#4f9440'][j % 3], L(M(tx, 0.9 * s + 0.35 * s, tz, j)));
+    });
+    else [-0.6, 0, 0.6].forEach((tx, j) => body.add(ico(0.18, 0), ['#e98aa6', '#f2c14e', '#ffffff'][j], L(M(tx, 0.2, -d / 2 - 0.6, j))));
+    // khói bếp
+    if (hh.smoke) { const top = new T.Vector3(w * 0.26, wh + rh * 0.45 + 0.45, -0.3).applyMatrix4(base); houseSmoke.push({ x: top.x, y: top.y, z: top.z, n: 3 }); }
+    hit.setMatrixAt(i, L(M(0, 1.6, 0.6, 0, w + 0.9, 3.2, d + 2.8)));
+    houseObjs.list.push({ no: hh.no, x: p.x, z: p.z, top: wh + rh + 0.9, size: Math.max(w, d), yaw, instance: i });
+  });
+  hit.instanceMatrix.needsUpdate = true; hit.userData.pick = { type: 'house' }; hit.computeBoundingSphere && hit.computeBoundingSphere();
+  scene.add(hit); houseObjs.hit = hit;
+  houseObjs.mesh = body.mesh(matV, { cast: true, receive: true }); if (houseObjs.mesh) scene.add(houseObjs.mesh);
+  const ink = body.outline(); if (ink) { ink.visible = state.ink; scene.add(ink); inkObjects.push(ink); houseObjs.ink = ink; houseObjs._ink = ink; }
+  houseObjs.lit = lit.mesh(winLitMat); if (houseObjs.lit) scene.add(houseObjs.lit);
+  houseObjs.dark = dark.mesh(winDarkMat); if (houseObjs.dark) scene.add(houseObjs.dark);
+  houseObjs.markers = mark.mesh(matV, { receive: true }); if (houseObjs.markers) scene.add(houseObjs.markers);
+  rebuildSmoke();
+  rebuildPlates();
+  updateSelectionRing();
+}
+
+/* ---- Khói ---- */
+const puffG = new T.IcosahedronGeometry(0.34, 0);
+const puffMat = new T.MeshLambertMaterial({ color: '#f4f2ee', transparent: true, opacity: 0.82, depthWrite: false });
+const puffs = new T.InstancedMesh(puffG, puffMat, 900); puffs.count = 0; puffs.frustumCulled = false; scene.add(puffs);
+let smokeList = [];
+function rebuildSmoke() { smokeList = []; smokeSources.concat(houseSmoke).forEach(s => { for (let i = 0; i < s.n; i++) smokeList.push({ x: s.x, y: s.y, z: s.z, ph: i / s.n + hash2(s.x, s.z) }); }); }
+const trainPuffs = Array.from({ length: 12 }, () => ({ x: 0, y: -99, z: 0, age: 9 }));
+let trainPuffTimer = 0;
+
+/* ---- Đèn lồng, lửa ---- */
+let lanterns, fireMesh;
+function buildLanterns() {
+  const lg = new T.BoxGeometry(0.34, 0.44, 0.34);
+  lanterns = new T.InstancedMesh(lg, new T.MeshBasicMaterial({ color: '#b8462f' }), lanternSpots.length);
+  lanternSpots.forEach(([x, y, z], i) => lanterns.setMatrixAt(i, M(x, y, z)));
+  scene.add(lanterns);
+  if (hearthFire) {
+    const fb = new Batch();
+    fb.add(cone(0.24, 0.6, 5), '#f08a2c', M(hearthFire.x, hearthFire.y + 0.25, hearthFire.z));
+    fb.add(cone(0.14, 0.42, 5), '#ffd04a', M(hearthFire.x + 0.05, hearthFire.y + 0.25, hearthFire.z + 0.05));
+    fireMesh = fb.mesh(new T.MeshBasicMaterial({ vertexColors: true })); scene.add(fireMesh);
+  }
+}
+
+/* ---- Tàu Cứ Cho Đi ---- */
+const train = { cars: [], group: new T.Group(), clock: 12, RUN: 72, DWELL: 6, s: 0, moving: true, chimney: new T.Vector3() };
+scene.add(train.group);
+function buildTrain() {
+  const loco = new Batch();
+  loco.add(BOX, '#2b2f33', M(0, 0.55, 0, 0, 1.5, 0.35, 3.4));
+  loco.add(cyl(0.55, 0.55, 2.2, 10), '#2f5d50', M(0, 1.2, 0.45, 0, 1, 1, 1, Math.PI / 2));
+  loco.add(cyl(0.57, 0.57, 0.12, 10), '#d9a53c', M(0, 1.2, 1.5, 0, 1, 1, 1, Math.PI / 2));
+  loco.add(cyl(0.57, 0.57, 0.1, 10), '#d9a53c', M(0, 1.2, 0.2, 0, 1, 1, 1, Math.PI / 2));
+  loco.add(BOX, '#2f5d50', M(0, 1.4, -1.05, 0, 1.5, 1.45, 1.3));
+  loco.add(BOX, '#1f2326', M(0, 2.17, -1.05, 0, 1.75, 0.12, 1.55));
+  loco.add(BOX, '#a9c9d6', M(0.76, 1.6, -1.05, 0, 0.04, 0.5, 0.7));
+  loco.add(BOX, '#a9c9d6', M(-0.76, 1.6, -1.05, 0, 0.04, 0.5, 0.7));
+  loco.add(cyl(0.18, 0.25, 0.8, 8), '#1f2326', M(0, 2.0, 1.05));
+  loco.add(BOX, '#ffe08a', M(0, 1.25, 1.58, 0, 0.3, 0.26, 0.08));
+  loco.add(BOX, '#b8432f', M(0, 0.42, 1.85, 0, 1.3, 0.34, 0.5, -0.45));
+  [-1.05, 0, 1.05].forEach(z => [-0.72, 0.72].forEach(x => loco.add(cyl(0.34, 0.34, 0.14, 10), '#b8432f', M(x, 0.42, z, 0, 1, 1, 1, 0, Math.PI / 2))));
+  const lm = loco.mesh(matV, { cast: true }); train.cars.push({ obj: lm, gap: 0, len: 3.6 }); train.group.add(lm);
+  const coach = new Batch();
+  coach.add(BOX, '#6b4c35', M(0, 0.55, 0, 0, 1.45, 0.3, 2.9));
+  coach.add(BOX, '#e9dcc0', M(0, 1.35, 0, 0, 1.5, 1.3, 2.8));
+  coach.add(BOX, '#2f5d50', M(0, 2.07, 0, 0, 1.7, 0.14, 3.0));
+  [-0.9, 0, 0.9].forEach(z => [-0.76, 0.76].forEach(x => coach.add(BOX, '#a9c9d6', M(x, 1.5, z, 0, 0.04, 0.5, 0.6))));
+  [-0.9, 0.9].forEach(z => [-0.7, 0.7].forEach(x => coach.add(cyl(0.3, 0.3, 0.12, 10), '#3a3a3a', M(x, 0.38, z, 0, 1, 1, 1, 0, Math.PI / 2))));
+  const cm = coach.mesh(matV, { cast: true }); train.cars.push({ obj: cm, gap: 3.55, len: 3 }); train.group.add(cm);
+  const GIFT = [['#d0574f', '#f5e3b5'], ['#3f7fbf', '#f5e3b5'], ['#5b9e5a', '#fff4d6'], ['#e0a33b', '#b8432f'], ['#8a63b8', '#f5e3b5'], ['#e07a9e', '#ffffff']];
+  for (let wgn = 0; wgn < 3; wgn++) {
+    const wb = new Batch();
+    wb.add(BOX, '#8a5a3a', M(0, 0.62, 0, 0, 1.5, 0.45, 2.6));
+    [-1.3, 1.3].forEach(z => wb.add(BOX, '#6b4c35', M(0, 0.95, z, 0, 1.5, 0.3, 0.1)));
+    [-0.8, 0.8].forEach(z => [-0.7, 0.7].forEach(x => wb.add(cyl(0.3, 0.3, 0.12, 10), '#3a3a3a', M(x, 0.38, z, 0, 1, 1, 1, 0, Math.PI / 2))));
+    [[-0.35, -0.6, 0.62], [0.3, 0.1, 0.72], [-0.2, 0.75, 0.55]].forEach(([x, z, s], j) => {
+      const [c1, c2] = GIFT[(wgn * 3 + j) % GIFT.length], y = 0.85 + s / 2;
+      wb.add(BOX, c1, M(x, y, z, j * 0.4, s, s, s));
+      wb.add(BOX, c2, M(x, y, z, j * 0.4, s + 0.02, s + 0.02, 0.1));
+      wb.add(BOX, c2, M(x, y, z, j * 0.4, 0.1, s + 0.02, s + 0.02));
+    });
+    const wm = wb.mesh(matV, { cast: true }); train.cars.push({ obj: wm, gap: 3.1, len: 2.6 }); train.group.add(wm);
+  }
+  train.cars.forEach(c => { c.obj.userData.pick = { type: 'train' }; });
+}
+function trainTravel(u) { const a = 0.14, v = 1 / (1 - a); if (u < a) return 0.5 * v * u * u / a; if (u > 1 - a) { const w = 1 - u; return 1 - 0.5 * v * w * w / a; } return 0.5 * v * a + v * (u - a); }
+const trainTan = new T.Vector3();
+function updateTrain(dt) {
+  train.clock += dt;
+  const L = Math.PI * 2 * R_RAIL, cyc = train.RUN + train.DWELL, t = train.clock % cyc, sStation = 1.5 * Math.PI * R_RAIL;
+  train.moving = t >= train.DWELL;
+  train.s = train.moving ? sStation + L * trainTravel((t - train.DWELL) / train.RUN) : sStation;
+  let s = train.s;
+  train.cars.forEach((c, i) => {
+    s -= c.gap;
+    const a = s / R_RAIL, x = Math.cos(a) * R_RAIL, z = Math.sin(a) * R_RAIL;
+    c.obj.position.set(x, 0.2, z);
+    c.obj.rotation.set(0, Math.atan2(-Math.sin(a), Math.cos(a)), 0);
+    if (i === 0) { trainTan.set(-Math.sin(a), 0, Math.cos(a)); train.chimney.set(0, 2.45, 1.05).applyEuler(c.obj.rotation).add(c.obj.position); }
+  });
+  trainPuffTimer -= dt;
+  if (trainPuffTimer <= 0) {
+    trainPuffTimer = train.moving ? 0.28 : 0.9;
+    const p = trainPuffs.reduce((o, q) => (q.age > o.age ? q : o), trainPuffs[0]);
+    p.x = train.chimney.x; p.y = train.chimney.y; p.z = train.chimney.z; p.age = 0;
+  }
+}
+
+/* ---- Người đi dạo, chim, mây, mưa, sao, thuyền ---- */
+const walkers = [];
+function buildWalkers() {
+  const rnd = mulberry32(5);
+  for (let i = 0; i < 14; i++) {
+    const b = new Batch();
+    const s = rnd() < 0.3 ? 0.62 : 1;
+    person(b, M(), CLOTHES[Math.floor(rnd() * CLOTHES.length)], SKIN[i % 3], s, HAIR[i % 4]);
+    const mesh = b.mesh(matV, { cast: true }); scene.add(mesh);
+    const ring = i >= 11;
+    walkers.push({ mesh, ring, path: PATH_DEGS[i % 5] * D2R, r: ring ? 47.55 : 15 + rnd() * 30, a: rnd() * Math.PI * 2, dir: rnd() < 0.5 ? 1 : -1, sp: 0.9 + rnd() * 0.6, side: (rnd() < 0.5 ? -1 : 1) * 0.5, pause: 0, ph: rnd() * 6 });
+  }
+}
+function updateWalkers(dt, time) {
+  walkers.forEach(w => {
+    if (w.pause > 0) { w.pause -= dt; }
+    else if (w.ring) { w.a += w.dir * w.sp * dt / w.r; }
+    else { w.r += w.dir * w.sp * dt; if (w.r > 46 || w.r < 14.5) { w.dir *= -1; w.r = clamp(w.r, 14.5, 46); w.pause = 1 + (w.ph % 3); } }
+    let x, z, yaw;
+    if (w.ring) { x = Math.cos(w.a) * (w.r + w.side * 0.8); z = Math.sin(w.a) * (w.r + w.side * 0.8); yaw = Math.atan2(-Math.sin(w.a) * w.dir, Math.cos(w.a) * w.dir); }
+    else { const c = Math.cos(w.path), sn = Math.sin(w.path); x = c * w.r - sn * w.side; z = sn * w.r + c * w.side; yaw = Math.atan2(c * w.dir, sn * w.dir); }
+    const bob = w.pause > 0 ? 0 : Math.abs(Math.sin(time * 7 + w.ph)) * 0.07;
+    w.mesh.position.set(x, 0.05 + bob, z); w.mesh.rotation.y = yaw;
+  });
+}
+const birds = [];
+function buildBirds() {
+  const wg = new T.BufferGeometry(); wg.setAttribute('position', new T.Float32BufferAttribute([0, 0, 0.25, 0, 0, -0.25, 1.1, 0, 0], 3)); wg.computeVertexNormals();
+  const bm = new T.MeshBasicMaterial({ color: '#2d3336', side: T.DoubleSide });
+  for (let i = 0; i < 8; i++) {
+    const g = new T.Group(), l = new T.Mesh(wg, bm), r = new T.Mesh(wg, bm); r.scale.x = -1; g.add(l, r); scene.add(g);
+    birds.push({ g, l, r, rad: 24 + i * 2.6, hgt: 17 + (i % 4) * 2.5, sp: 0.16 + (i % 3) * 0.04, ph: i * 0.8 });
+  }
+}
+const clouds = [];
+const cloudMat = new T.MeshLambertMaterial({ vertexColors: true, color: '#ffffff' });
+const cloudMatHi = new T.MeshLambertMaterial({ vertexColors: true, color: '#ffffff', transparent: true, opacity: 0.78, depthWrite: false });
+function cloudMesh(rnd, mat, k) {
+  const b = new Batch(), n = 3 + Math.floor(rnd() * 4);
+  for (let j = 0; j < n; j++) { const s = (2 + rnd() * 2.6) * k; b.add(ico(1, 0), '#ffffff', M((j - n / 2) * 2.3 * k + rnd(), rnd() * 1.2 * k, (rnd() - 0.5) * 2.5 * k, rnd() * 3, s, s * 0.72, s)); }
+  const m = b.mesh(mat); scene.add(m); return m;
+}
+function buildClouds() {
+  const rnd = mulberry32(42);
+  // vòng mây xa quanh làng
+  for (let i = 0; i < 26; i++) clouds.push({ m: cloudMesh(rnd, cloudMat, i % 4 === 0 ? 1.35 : 1), a: rnd() * Math.PI * 2, r: 104 + rnd() * 72, y: 14 + rnd() * 34, sp: 0.006 + rnd() * 0.008, keep: i < 15 });
+  // mây cao, trôi chậm ngay trên làng
+  for (let i = 0; i < 12; i++) clouds.push({ m: cloudMesh(rnd, cloudMatHi, 0.85), a: rnd() * Math.PI * 2, r: 36 + rnd() * 62, y: 46 + rnd() * 12, sp: 0.004 + rnd() * 0.005, keep: i < 8 });
+}
+let rain, rainPos, RAIN_N = 2200;
+function buildRain() {
+  const g = new T.BufferGeometry(); rainPos = new Float32Array(RAIN_N * 6);
+  for (let i = 0; i < RAIN_N; i++) { const x = (Math.random() - 0.5) * 190, y = Math.random() * 70, z = (Math.random() - 0.5) * 190; rainPos.set([x, y, z, x - 0.12, y - 1.3, z], i * 6); }
+  g.setAttribute('position', new T.BufferAttribute(rainPos, 3));
+  rain = new T.LineSegments(g, new T.LineBasicMaterial({ color: '#b9cfdd', transparent: true, opacity: 0 })); rain.frustumCulled = false; rain.visible = false; scene.add(rain);
+}
+let stars;
+function buildStars() {
+  const g = new T.BufferGeometry(), a = [];
+  const rnd = mulberry32(3);
+  for (let i = 0; i < 520; i++) { const th = rnd() * Math.PI * 2, ph = rnd() * 1.2, r = 420; a.push(Math.cos(th) * Math.sin(ph) * r, Math.cos(ph) * r * 0.7 + 30, Math.sin(th) * Math.sin(ph) * r); }
+  g.setAttribute('position', new T.Float32BufferAttribute(a, 3));
+  stars = new T.Points(g, new T.PointsMaterial({ color: '#ffffff', size: 1.7, sizeAttenuation: false, transparent: true, opacity: 0, fog: false })); scene.add(stars);
+}
+/* ---- Mặt trời, mặt trăng ---- */
+let sunVis, moonVis;
+const SUN_DAY = new T.Color('#ffe07a'), SUN_SET = new T.Color('#ff8f4a'), _sv = new T.Vector3();
+function skyDisk(r, color, op) { return new T.Mesh(new T.CircleGeometry(r, 40), new T.MeshBasicMaterial({ color, transparent: true, opacity: op, fog: false, depthWrite: false })); }
+function buildSkyBodies() {
+  const halo2 = skyDisk(27, '#fff1b8', 0.12), halo = skyDisk(16, '#ffe9a0', 0.3), core = skyDisk(9.5, '#ffe07a', 1);
+  halo2.position.z = -0.4; halo.position.z = -0.2;
+  sunVis = new T.Group(); sunVis.add(halo2, halo, core); sunVis.userData = { parts: [halo2, halo, core], base: [0.12, 0.3, 1] };
+  const mHalo = skyDisk(15, '#dfe7ff', 0.14), mCore = skyDisk(7.2, '#f5f1dd', 1);
+  const c1 = skyDisk(1.5, '#dcd5b9', 1), c2 = skyDisk(0.95, '#dcd5b9', 1), c3 = skyDisk(1.15, '#dcd5b9', 1);
+  mHalo.position.z = -0.2; c1.position.set(-2.3, 1.7, 0.1); c2.position.set(2.5, -1.1, 0.1); c3.position.set(0.5, -3.4, 0.1);
+  moonVis = new T.Group(); moonVis.add(mHalo, mCore, c1, c2, c3); moonVis.userData = { parts: [mHalo, mCore, c1, c2, c3], base: [0.14, 1, 1, 1, 1] };
+  scene.add(sunVis, moonVis);
+}
+function setSkyOpacity(g, k) { g.visible = k > 0.01; g.userData.parts.forEach((m, i) => { m.material.opacity = g.userData.base[i] * k; }); }
+function updateSkyBodies() {
+  const n = light.night, w = currentWeather(), wk = w === 'rain' ? 0.15 : w === 'cloudy' ? 0.55 : 1, R = 330;
+  // Mặt trời đi theo hướng nắng, đặt thấp trên trời để nhìn thấy từ góc Chuyến tàu, Góc của con
+  const az = Math.atan2(light.pos.z, light.pos.x), el = clamp(Math.atan2(light.pos.y, Math.hypot(light.pos.x, light.pos.z)) * 0.3, 0.07, 0.3);
+  sunVis.position.set(Math.cos(az) * Math.cos(el) * R, Math.sin(el) * R, Math.sin(az) * Math.cos(el) * R);
+  sunVis.userData.parts.at(-1).material.color.copy(SUN_DAY).lerp(SUN_SET, smooth(n / 0.45));
+  sunVis.lookAt(camera.position);
+  setSkyOpacity(sunVis, (1 - smooth((n - 0.45) / 0.25)) * wk);
+  const maz = Math.atan2(-60, 35), mel = 0.34;
+  moonVis.position.set(Math.cos(maz) * Math.cos(mel) * R, Math.sin(mel) * R, Math.sin(maz) * Math.cos(mel) * R);
+  moonVis.lookAt(camera.position);
+  setSkyOpacity(moonVis, smooth((n - 0.7) / 0.3) * wk);
+}
+
+/* ---- Máy bay, thi thoảng bay ngang qua làng ---- */
+let plane = null, planeNext = 9;
+function buildPlane() {
+  const b = new Batch(), body = '#f6f5f0', wing = '#d4dbe0';
+  b.add(BOX, body, M(0, 0, 0, 0, 1.1, 1.1, 7.2));
+  b.add(cone(0.55, 1.4, 8), body, M(0, 0, 4.3, 0, 1, 1, 1, Math.PI / 2));
+  b.add(BOX, '#4d88b0', M(0, 0.18, 0.4, 0, 1.14, 0.24, 5));
+  b.add(BOX, wing, M(0, -0.18, 0.5, 0, 10.5, 0.2, 1.8));
+  b.add(BOX, wing, M(0, 0.08, -3.1, 0, 4, 0.18, 1.1));
+  b.add(BOX, '#d9785c', M(0, 1.05, -3.2, 0, 0.22, 1.9, 1.3));
+  b.add(BOX, '#9aa4ab', M(-2.4, -0.55, 0.9, 0, 0.55, 0.55, 1.5));
+  b.add(BOX, '#9aa4ab', M(2.4, -0.55, 0.9, 0, 0.55, 0.55, 1.5));
+  const g = new T.Group(); g.add(b.mesh(matV));
+  const blink = new T.Mesh(BOX, new T.MeshBasicMaterial({ color: '#ff5a4a' })); blink.scale.set(0.35, 0.35, 0.35); blink.position.set(0, 2.05, -3.5); g.add(blink);
+  const wl = new T.Mesh(BOX, new T.MeshBasicMaterial({ color: '#ffffff' })); wl.scale.set(0.28, 0.28, 0.28); wl.position.set(-5.2, -0.15, 0.5); g.add(wl);
+  const wr = wl.clone(); wr.material = new T.MeshBasicMaterial({ color: '#4cd27a' }); wr.position.x = 5.2; wl.material = new T.MeshBasicMaterial({ color: '#ff5a4a' }); g.add(wr);
+  const trailMat = new T.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0, depthWrite: false });
+  [-2.4, 2.4].forEach(x => { const t = new T.Mesh(BOX, trailMat); t.scale.set(0.3, 0.3, 30); t.position.set(x, -0.55, -15.5); g.add(t); });
+  g.visible = false; scene.add(g);
+  plane = { g, blink, trailMat, on: false, t: 0, y: 50, p0: new T.Vector3(), dir: new T.Vector3() };
+}
+function updatePlane(dt) {
+  if (!plane) return;
+  if (!plane.on) {
+    planeNext -= dt; if (planeNext > 0) return;
+    if (currentWeather() === 'rain') { planeNext = 20; return; }
+    const th = Math.random() * Math.PI * 2, off = (Math.random() - 0.5) * 80, R = 270;
+    plane.dir.set(-Math.cos(th), 0, -Math.sin(th));
+    plane.p0.set(Math.cos(th) * R - plane.dir.z * off, 0, Math.sin(th) * R + plane.dir.x * off);
+    plane.y = 32 + Math.random() * 6; plane.t = 0; plane.on = true; plane.g.visible = true;
+  }
+  plane.t += dt; const d = plane.t * 22, yaw = Math.atan2(plane.dir.x, plane.dir.z);
+  plane.g.position.copy(plane.p0).addScaledVector(plane.dir, d); plane.g.position.y = plane.y + Math.sin(plane.t * 0.8) * 0.6;
+  plane.g.rotation.set(0, yaw, Math.sin(plane.t * 0.5) * 0.05);
+  const n = light.night;
+  plane.blink.visible = (time % 1.3) < 0.16;
+  plane.trailMat.opacity = 0.3 * (1 - smooth((n - 0.4) / 0.4)) * Math.min(1, plane.t / 2);
+  if (d > 540) { plane.on = false; plane.g.visible = false; planeNext = 40 + Math.random() * 50; }
+}
+
+let boat, boatU = 0.3, boatDir = 1;
+function buildBoat() {
+  const b = new Batch();
+  b.add(BOX, '#7a5236', M(0, 0.25, 0, 0, 1.0, 0.35, 2.6));
+  b.add(BOX, '#6b4630', M(0, 0.35, 1.35, 0, 0.6, 0.3, 0.5, 0.3));
+  b.add(GABLE, '#d9b25a', M(0, 0.45, -0.3, 0, 1.1, 0.6, 1.2));
+  person(b, M(0, 0.4, 0.9, 0), '#3f7fbf', SKIN[0], 0.9, HAIR[0]);
+  b.add(cone(0.42, 0.22, 8), '#d9b25a', M(0, 1.32, 0.9));
+  boat = b.mesh(matV, { cast: true }); scene.add(boat);
+}
+
+/* ---- Vòng chọn ---- */
+const selRing = new T.Mesh(new T.TorusGeometry(1, 0.09, 6, 44), new T.MeshBasicMaterial({ color: '#f2b53c' }));
+selRing.rotation.x = Math.PI / 2; selRing.visible = false; scene.add(selRing);
+const wsRing = new T.Mesh(new T.TorusGeometry(3.1, 0.1, 6, 50), new T.MeshBasicMaterial({ color: '#f2b53c' }));
+wsRing.rotation.x = Math.PI / 2; scene.add(wsRing);
+function updateSelectionRing() {
+  const o = houseObjs.list.find(q => q.no === state.selected);
+  if (!o) { selRing.visible = false; return; }
+  selRing.visible = true; selRing.position.set(o.x, 0.12, o.z); const s = o.size * 0.95 + 0.9; selRing.scale.set(s, s, 1);
+}
+function placeWsRing() { const w = WS[currentWorkshop()] || WS.gieng; const [x, z] = polar(w.deg, WS_R); wsRing.position.set(x, 0.14, z); }
+
+/* ---- Bảng hiệu Ga ---- */
+function makeSign(text, w, hh) {
+  const c = document.createElement('canvas'); c.width = 512; c.height = Math.round(512 * hh / w);
+  const g = c.getContext('2d');
+  g.fillStyle = '#2f5d50'; g.fillRect(0, 0, c.width, c.height);
+  g.strokeStyle = '#d9a53c'; g.lineWidth = 10; g.strokeRect(8, 8, c.width - 16, c.height - 16);
+  g.fillStyle = '#fbf3dc'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.font = `800 ${Math.round(c.height * 0.56)}px "Baloo 2", "Be Vietnam Pro", sans-serif`;
+  g.fillText(text, c.width / 2, c.height * 0.56);
+  const tex = new T.CanvasTexture(c); tex.anisotropy = 4;
+  return new T.Mesh(new T.PlaneGeometry(w, hh), new T.MeshBasicMaterial({ map: tex }));
+}
+function buildSigns() {
+  if (stationSign) { scene.remove(stationSign); stationSign.geometry.dispose(); }
+  stationSign = makeSign('GA LÀNG', 3.6, 0.8);
+  stationSign.position.set(0, 3.55, -(R_RAIL + 2.9) - 2.05);
+  scene.add(stationSign);
+}
+
+/* ================= Nhãn nổi ================= */
+const labelLayer = $('#labels');
+const staticLabels = [];
+function addLabel(cls, html, pos, kind, extra) { const el = document.createElement('div'); el.className = 'lbl ' + cls; el.innerHTML = html; labelLayer.appendChild(el); const o = Object.assign({ el, pos: new T.Vector3(...pos), kind }, extra || {}); staticLabels.push(o); return o; }
+const xomLabels = {};
+function buildLabels() {
+  XOMS.forEach(x => {
+    const [px, pz] = polar(x.deg, 31);
+    xomLabels[x.key] = addLabel('lbl-xom', `<i style="--c:${x.roof}"></i><b>${x.name}</b><span data-ct>${x.age}</span>`, [px, 7.5, pz], 'xom');
+  });
+  WORKSHOPS.forEach(w => { const [px, pz] = polar(w.deg, WS_R); addLabel('lbl-ws', `<b>${w.name}</b><span>${w.nghe}</span>`, [px, w.key === 'goc-da' ? 7.8 : w.key === 'luy-tre' ? 7.6 : 5.4, pz], 'ws', { key: w.key }); });
+  PUBLICS.forEach(p => { const [px, pz] = polar(p.deg, PUB_R); addLabel('lbl-pub', p.name, [px, p.key === 'choi-canh' ? 7.2 : 5.2, pz], 'pub'); });
+  addLabel('lbl-xom', '<i style="--c:#2f5d50"></i><b>Ga Làng</b><span>người mới xuống tàu</span>', [0, 6.4, -(R_RAIL + 6.6)], 'station');
+}
+function refreshLabelCounts() {
+  const list = houses();
+  XOMS.forEach(x => { const n = list.filter(hh => hh.xom === x.key).length; const s = xomLabels[x.key] && xomLabels[x.key].el.querySelector('[data-ct]'); if (s) s.textContent = `${x.age} · ${n} nhà`; });
+  staticLabels.forEach(l => { if (l.kind === 'ws') l.el.classList.toggle('is-now', l.key === currentWorkshop()); if (l.kind === 'ws') { const sp = l.el.querySelector('span'); sp.textContent = WS[l.key].nghe + (l.key === currentWorkshop() ? ' · tháng này' : ''); } });
+}
+const platePool = [];
+function rebuildPlates() { /* dùng pool, cập nhật mỗi khung hình */ }
+function plateEl(i) { if (!platePool[i]) { const el = document.createElement('div'); el.className = 'lbl lbl-no'; labelLayer.appendChild(el); platePool[i] = el; } return platePool[i]; }
+const _v = new T.Vector3();
+let viewW = 1, viewH = 1, frameN = 0;
+function project(v3, out) { _v.copy(v3).project(camera); if (_v.z > 1 || _v.z < -1) return false; out.x = (_v.x * 0.5 + 0.5) * viewW; out.y = (-_v.y * 0.5 + 0.5) * viewH; return out.x > -80 && out.x < viewW + 80 && out.y > -40 && out.y < viewH + 40; }
+const _pt = { x: 0, y: 0 }, _hp = new T.Vector3();
+function updateLabels() {
+  const show = state.labels && state.cam !== 'train';
+  const camDist = camera.position.distanceTo(controls.target);
+  staticLabels.forEach(l => {
+    let vis = show && project(l.pos, _pt);
+    if (vis && (l.kind === 'ws' || l.kind === 'pub') && camDist > 105) vis = false;
+    if (vis && l.kind === 'xom' && camDist < 30 && state.cam !== 'overview') vis = false;
+    if (vis && state.cam === 'child' && l.kind !== 'ws') vis = false;
+    if (!vis) { if (l.el.style.opacity !== '0') l.el.style.opacity = '0'; return; }
+    l.el.style.opacity = '1';
+    l.el.style.transform = `translate(${_pt.x.toFixed(1)}px,${_pt.y.toFixed(1)}px) translate(-50%,-100%)`;
+  });
+  let used = 0;
+  if (show && state.cam !== 'child') {
+    const cand = [];
+    houseObjs.list.forEach(o => { _hp.set(o.x, o.top, o.z); const d = _hp.distanceTo(camera.position); if (d < 62 || o.no === state.selected) cand.push([d, o]); });
+    cand.sort((a, b) => a[0] - b[0]);
+    for (const [, o] of cand) {
+      if (used >= 90) break;
+      _hp.set(o.x, o.top, o.z);
+      if (!project(_hp, _pt)) continue;
+      const el = plateEl(used++);
+      el.textContent = pad(o.no); el.classList.toggle('is-sel', o.no === state.selected);
+      el.style.opacity = '1';
+      el.style.transform = `translate(${_pt.x.toFixed(1)}px,${_pt.y.toFixed(1)}px) translate(-50%,-100%)`;
+    }
+  }
+  for (let i = used; i < platePool.length; i++) if (platePool[i].style.opacity !== '0') platePool[i].style.opacity = '0';
+}
+
+/* ================= Ngày, đêm, thời tiết ================= */
+const TIMES = {
+  day: { sky: '#bfe3ee', fog: '#d3eaee', sun: '#fff3dc', sunI: 0.85, hs: '#e6f4ff', hg: '#7d6f52', hI: 0.55, pos: [80, 110, -45], night: 0 },
+  evening: { sky: '#f0c49c', fog: '#eecaa8', sun: '#ffa865', sunI: 0.78, hs: '#ffd9b8', hg: '#6a5040', hI: 0.46, pos: [-105, 48, 30], night: 0.45 },
+  night: { sky: '#132339', fog: '#18263b', sun: '#9fb8e8', sunI: 0.3, hs: '#3a5783', hg: '#1b1f2a', hI: 0.34, pos: [35, 95, -60], night: 1 }
+};
+const WEATHER_MOD = { sunny: { mix: null, amt: 0, sunK: 1, hK: 1, cloud: '#ffffff' }, cloudy: { mix: '#aab6be', amt: 0.45, sunK: 0.62, hK: 0.98, cloud: '#e4e8ea' }, rain: { mix: '#7d8993', amt: 0.68, sunK: 0.35, hK: 0.88, cloud: '#a2abb2' } };
+const light = { sky: new T.Color('#bfe3ee'), fog: new T.Color('#d3eaee'), sun: new T.Color('#fff3dc'), hs: new T.Color('#e6f4ff'), hg: new T.Color('#8a7a55'), sunI: 0.85, hI: 0.55, pos: new T.Vector3(80, 110, -45), night: 0, cloud: new T.Color('#ffffff'), rain: 0 };
+const target = { sky: new T.Color(), fog: new T.Color(), sun: new T.Color(), hs: new T.Color(), hg: new T.Color(), sunI: 1, hI: 1, pos: new T.Vector3(), night: 0, cloud: new T.Color(), rain: 0 };
+function vnHour() { try { const p = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Ho_Chi_Minh', hour: 'numeric', minute: 'numeric', hour12: false }).formatToParts(new Date()); const hh = +p.find(x => x.type === 'hour').value, mm = +p.find(x => x.type === 'minute').value; return hh + mm / 60; } catch (e) { return new Date().getHours(); } }
+function currentTimeKey() { if (state.timeMode !== 'auto') return state.timeMode; const hr = vnHour(); if (hr >= 5.5 && hr < 16.5) return 'day'; if (hr >= 16.5 && hr < 18.7) return 'evening'; return 'night'; }
+function currentWeather() { return state.weatherMode === 'village' ? villageWeather() : state.weatherMode; }
+function computeTarget() {
+  const tk = TIMES[currentTimeKey()], wk = WEATHER_MOD[currentWeather()] || WEATHER_MOD.sunny;
+  target.sky.set(tk.sky); target.fog.set(tk.fog);
+  if (wk.mix) { const mx = new T.Color(wk.mix).multiplyScalar(tk.night > 0.9 ? 0.25 : tk.night > 0.3 ? 0.8 : 1); target.sky.lerp(mx, wk.amt); target.fog.lerp(mx, wk.amt); }
+  target.sun.set(tk.sun); target.hs.set(tk.hs); target.hg.set(tk.hg);
+  target.sunI = tk.sunI * wk.sunK; target.hI = tk.hI * wk.hK; target.pos.set(...tk.pos); target.night = tk.night;
+  target.cloud.set(wk.cloud); target.rain = currentWeather() === 'rain' ? 1 : 0;
+}
+const glass = new T.Color('#a9c9d6'), warm = new T.Color('#ffcb69'), darkWin = new T.Color('#27323f'), lanternOff = new T.Color('#b8462f'), lanternOn = new T.Color('#ffb24a');
+function applyLight(dt, instant) {
+  const k = instant ? 1 : clamp(dt * 1.6, 0, 1);
+  ['sky', 'fog', 'sun', 'hs', 'hg', 'cloud'].forEach(n => light[n].lerp(target[n], k));
+  light.sunI = lerp(light.sunI, target.sunI, k); light.hI = lerp(light.hI, target.hI, k); light.pos.lerp(target.pos, k); light.night = lerp(light.night, target.night, k); light.rain = lerp(light.rain, target.rain, k);
+  scene.background.copy(light.sky); scene.fog.color.copy(light.fog);
+  sun.color.copy(light.sun); sun.intensity = light.sunI; sun.position.copy(light.pos);
+  hemi.color.copy(light.hs); hemi.groundColor.copy(light.hg); hemi.intensity = light.hI;
+  const n = light.night;
+  winLitMat.color.copy(glass).lerp(warm, smooth((n - 0.15) / 0.45));
+  winDarkMat.color.copy(glass).lerp(darkWin, smooth(n));
+  if (lanterns) lanterns.material.color.copy(lanternOff).lerp(lanternOn, smooth((n - 0.2) / 0.5));
+  nightLights.forEach(l => { l.intensity = smooth((n - 0.35) / 0.5) * 1.1; });
+  stars.material.opacity = smooth((n - 0.6) / 0.4) * (1 - light.rain * 0.8);
+  cloudMat.color.copy(light.cloud).multiplyScalar(1 - n * 0.55); cloudMatHi.color.copy(cloudMat.color); cloudMat.emissive.copy(cloudMat.color).multiplyScalar(0.3); cloudMatHi.emissive.copy(cloudMat.emissive);
+  puffMat.color.set('#f4f2ee').multiplyScalar(1 - n * 0.45);
+  waterMat.color.set('#4d9fbc').multiplyScalar(1 - light.rain * 0.18);
+  rain.visible = light.rain > 0.02; rain.material.opacity = light.rain * 0.55;
+  birds.forEach(b => { b.g.visible = n < 0.7 && light.rain < 0.5; });
+}
+
+/* ================= Camera ================= */
+const DEFAULT = () => (viewW < viewH ? { pos: new T.Vector3(0, 150, 178), tgt: new T.Vector3(0, 0, 4) } : { pos: new T.Vector3(0, 86, 110), tgt: new T.Vector3(0, 0, 4) });
+let fly = null;
+function flyTo(pos, tgt, dur = 1.3) {
+  if (prefersReduced) dur = 0.01;
+  fly = { p0: camera.position.clone(), t0: controls.target.clone(), p1: pos.clone(), t1: tgt.clone(), t: 0, dur };
+  controls.enabled = false;
+}
+function setControlsFor(mode) {
+  if (mode === 'child') { controls.minDistance = 2; controls.maxDistance = 20; controls.maxPolarAngle = 1.68; }
+  else { controls.minDistance = 6; controls.maxDistance = 260; controls.maxPolarAngle = 1.36; }
+}
+let hintTimer = 0;
+function showHint(text) { const el = $('#hint'); el.textContent = text; el.style.opacity = '1'; clearTimeout(hintTimer); hintTimer = setTimeout(() => { el.style.opacity = '0'; }, 4200); }
+function setCam(mode) {
+  if (mode === 'home') {
+    const o = houseObjs.list.find(q => q.no === state.selected);
+    if (!o) { toast('Chọn một ngôi nhà trước: bấm vào nhà, hoặc gõ số nhà vào ô Tìm nhà.'); $('#find').focus(); return; }
+  }
+  state.cam = mode;
+  $$('[data-cam]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.cam === mode)));
+  setControlsFor(mode);
+  if (mode === 'overview') { const d = DEFAULT(); flyTo(d.pos, d.tgt); }
+  else if (mode === 'child') { const [cx, cz] = polar(126, 16.5); flyTo(new T.Vector3(cx, 1.15, cz), new T.Vector3(0, 2.4, 0)); showHint('Hôm nay thử nhìn thế giới từ độ cao của con.'); }
+  else if (mode === 'home') { flyToHouse(state.selected); }
+  else if (mode === 'train') { fly = null; controls.enabled = false; controls.autoRotate = false; showHint('Chuyến Tàu Cứ Cho Đi đang chở quà quanh làng.'); }
+}
+function flyToHouse(no) {
+  const o = houseObjs.list.find(q => q.no === no); if (!o) return;
+  const dir = new T.Vector3(Math.sin(o.yaw), 0, Math.cos(o.yaw));
+  const tgt = new T.Vector3(o.x, 1.2, o.z);
+  const pos = tgt.clone().addScaledVector(dir, 9).add(new T.Vector3(0, 6, 0));
+  if (state.cam === 'train' || state.cam === 'child') { state.cam = 'home'; setControlsFor('home'); $$('[data-cam]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.cam === 'home'))); }
+  flyTo(pos, tgt);
+}
+function flyToXom(key) {
+  const x = XOM[key]; const [px, pz] = polar(x.deg, 32); const tgt = new T.Vector3(px, 0, pz);
+  const out = new T.Vector3(px, 0, pz).normalize();
+  const pos = tgt.clone().addScaledVector(out, 34).add(new T.Vector3(0, 36, 0));
+  if (state.cam !== 'overview') { state.cam = 'overview'; setControlsFor('overview'); $$('[data-cam]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.cam === 'overview'))); }
+  flyTo(pos, tgt);
+}
+
+/* ================= Chọn đối tượng ================= */
+const ray = new T.Raycaster(), ndc = new T.Vector2();
+function pickAt(cx, cy) {
+  const r = canvas.getBoundingClientRect();
+  ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(ndc, camera);
+  const objs = hitStatic.concat(train.cars.map(c => c.obj)); if (houseObjs.hit) objs.push(houseObjs.hit);
+  const hits = ray.intersectObjects(objs, false);
+  for (const hit of hits) {
+    const pk = hit.object.userData.pick; if (!pk) continue;
+    if (pk.type === 'house') { const o = houseObjs.list[hit.instanceId]; if (o) return { type: 'house', no: o.no }; continue; }
+    return pk;
+  }
+  return null;
+}
+const tip = $('#tip');
+function describe(pk) {
+  if (!pk) return null;
+  if (pk.type === 'house') { const hh = findHouse(pk.no); if (!hh) return null; return [`Nhà ${pad(hh.no)} · ${XOM[hh.xom].name}`, hh.name]; }
+  if (pk.type === 'ws') { const w = WS[pk.key]; return [w.name, w.full]; }
+  if (pk.type === 'pub') { const p = PUB[pk.key]; return [p.name, 'Công trình chung · ' + p.product]; }
+  if (pk.type === 'station') return ['Ga Làng', 'Nơi người mới xuống tàu'];
+  if (pk.type === 'train') return ['Chuyến Tàu Cứ Cho Đi', 'Bấm để xem quà tuần này'];
+  return null;
+}
+let downAt = null, hoverQueued = null;
+canvas.addEventListener('pointerdown', e => { downAt = { x: e.clientX, y: e.clientY, t: performance.now() }; if (fly) { fly = null; controls.enabled = state.cam !== 'train'; } if (state.cam === 'train' && e.button === 0) { /* giữ góc tàu */ } });
+canvas.addEventListener('pointerup', e => {
+  if (!downAt) return; const moved = Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y), dt = performance.now() - downAt.t; downAt = null;
+  if (moved > 7 || dt > 600) return;
+  const pk = pickAt(e.clientX, e.clientY);
+  if (!pk) return;
+  openFor(pk);
+});
+canvas.addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') return; hoverQueued = { x: e.clientX, y: e.clientY }; });
+canvas.addEventListener('pointerleave', () => { tip.hidden = true; hoverQueued = null; });
+function doHover() {
+  if (!hoverQueued) return; const { x, y } = hoverQueued; hoverQueued = null;
+  const d = describe(pickAt(x, y));
+  if (!d) { tip.hidden = true; canvas.style.cursor = ''; return; }
+  tip.replaceChildren(h('b', null, d[0]), h('br'), d[1]); tip.hidden = false; canvas.style.cursor = 'pointer';
+  const tw = tip.offsetWidth; tip.style.left = Math.min(x + 14, viewW - tw - 8) + 'px'; tip.style.top = (y + 16) + 'px';
+}
+
+/* ================= Thẻ & ngăn kéo ================= */
+const card = $('#card'), cardBody = $('#card-body'), cardEyebrow = $('#card-eyebrow');
+function closeCard() { card.hidden = true; }
+$('#card-close').addEventListener('click', () => { closeCard(); canvas.focus(); });
+function familySVG(hh) {
+  const wrap = h('div', { class: 'family', 'aria-hidden': 'true' });
+  const fig = (s, c) => { const svgNS = 'http://www.w3.org/2000/svg'; const sv = document.createElementNS(svgNS, 'svg'); const hgt = Math.round(38 * s), wd = Math.round(18 * s); sv.setAttribute('width', wd); sv.setAttribute('height', hgt); sv.setAttribute('viewBox', '0 0 18 38'); sv.innerHTML = `<circle cx="9" cy="7" r="6" fill="#e5b78e"/><path d="M9 7 m-6 -1 a6 6 0 0 1 12 0 z" fill="#2b2320"/><path d="M3 38 L4 17 Q9 13 14 17 L15 38 Z" fill="${c}"/>`; return sv; };
+  for (let i = 0; i < Math.min(hh.adults || 0, 8); i++) wrap.append(fig(1, CLOTHES[(hh.no + i) % CLOTHES.length]));
+  (hh.kids || []).forEach((ag, i) => wrap.append(fig(ag === '11-18' ? 0.82 : ag === '6-11' ? 0.7 : ag === '3-6' ? 0.6 : 0.5, CLOTHES[(hh.no + i + 3) % CLOTHES.length])));
+  return wrap;
+}
+function memberText(hh) {
+  const parts = [];
+  if (hh.adults) parts.push(`${hh.adults} người lớn`);
+  const kids = hh.kids || [];
+  if (kids.length) parts.push(`${kids.length} con (${kids.map(k => AGE_LABEL[k] || k).join(', ')})`);
+  if (!parts.length) return 'Chưa khai thành viên';
+  return parts.join(' · ');
+}
+function openHouseCard(no) {
+  const hh = findHouse(no); if (!hh) return;
+  state.selected = no; updateSelectionRing();
+  const x = XOM[hh.xom];
+  cardEyebrow.textContent = hh.sample ? 'Thẻ cư dân mẫu' : 'Thẻ cư dân';
+  const chips = h('p', { class: 'chips' }, h('span', { class: 'chip xom' }, x.name));
+  if (hh.provisional) chips.append(h('span', { class: 'chip warn' }, 'Xóm tạm xếp'));
+  if (hh.founding) chips.append(h('span', { class: 'chip good' }, 'Cư dân Khai Làng'));
+  if (hh.sample) chips.append(h('span', { class: 'chip' }, 'Nhà mẫu'));
+  const week = [hh.smoke ? 'Bếp có khói' : 'Bếp chưa đỏ lửa', hh.lit ? 'Đã sáng đèn' : 'Chưa check-in'].join(' · ');
+  const art = h('article', { class: 'idcard', style: `--xc:${x.roof}` },
+    h('header', { class: 'idcard-top' }, h('span', null, 'Làng Nghề Làm Cha Mẹ'), h('span', null, 'Thẻ cư dân')),
+    h('div', { class: 'idcard-main' },
+      h('div', { class: 'idno' }, h('small', null, 'Số nhà'), h('strong', null, pad(hh.no))),
+      h('div', { class: 'idname' }, h('h3', null, hh.name || 'Chưa đặt tên'), chips)),
+    familySVG(hh),
+    h('dl', { class: 'idrows' },
+      h('div', null, h('dt', null, 'Thành viên'), h('dd', null, memberText(hh))),
+      h('div', null, h('dt', null, 'Xóm'), h('dd', null, `${x.name}, ${x.age}`)),
+      h('div', null, h('dt', null, 'Vào làng'), h('dd', null, fmtDate(hh.joined) || 'Chưa ghi')),
+      h('div', null, h('dt', null, 'Muốn cho đi'), h('dd', null, hh.give || 'Chưa ghi')),
+      h('div', null, h('dt', null, 'Tuần này'), h('dd', null, week))),
+    h('footer', { class: 'idcard-foot' }, h('span', null, h('b', null, 'Cứ Cho Đi')), h('span', null, `Mã nhà #nha-${pad(hh.no)}`)));
+  const actions = h('div', { class: 'card-actions' }, h('button', { type: 'button', class: 'btn', onclick: () => { state.cam = 'home'; $$('[data-cam]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.cam === 'home'))); setControlsFor('home'); flyToHouse(no); } }, 'Bay tới cửa nhà'));
+  if (state.canEdit && state.mode === 'real') actions.append(h('button', { type: 'button', class: 'btn', onclick: () => { openAdmin('house'); loadHouseForm(hh); } }, 'Sửa nhà này'));
+  cardBody.replaceChildren(art, actions);
+  card.hidden = false;
+}
+function openWsCard(key) {
+  const w = WS[key]; const now = key === currentWorkshop();
+  cardEyebrow.textContent = 'Xưởng nghề';
+  cardBody.replaceChildren(h('div', { class: 'info', style: 'display:grid;gap:10px' },
+    h('h3', null, w.name), h('p', null, w.full),
+    now ? h('p', null, h('span', { class: 'chip warn' }, 'Xưởng mở tháng này')) : null,
+    h('dl', null, h('div', null, h('dt', null, 'Câu hỏi cốt lõi'), h('dd', null, w.q)), h('div', null, h('dt', null, 'Thực hành mẫu'), h('dd', null, w.practice)), h('div', null, h('dt', null, 'Hiện trên ngôi nhà'), h('dd', null, w.show))),
+    h('p', { class: 'muted' }, 'Mỗi nghề đi qua 5 mùa, do ba mẹ tự nhận, không ai chấm:'),
+    h('ol', { class: 'seasons' }, ['Gieo hạt', 'Nảy mầm', 'Ra hoa', 'Kết trái', 'Gieo tiếp'].map(s => h('li', null, s)))));
+  card.hidden = false;
+}
+function openPubCard(key) {
+  const p = PUB[key]; cardEyebrow.textContent = 'Công trình chung';
+  cardBody.replaceChildren(h('div', { class: 'info', style: 'display:grid;gap:10px' }, h('h3', null, p.name),
+    h('dl', null, h('div', null, h('dt', null, 'Sản phẩm'), h('dd', null, p.product)), h('div', null, h('dt', null, 'Gắn với'), h('dd', null, p.nghe))),
+    h('p', { class: 'muted' }, 'Công trình chỉ mở cửa khi có phần miễn phí thật sự hữu ích cho cư dân, không bán hàng trong làng.')));
+  card.hidden = false;
+}
+function openTrainCard() {
+  const gifts = houses().filter(hh => hh.give).sort((a, b) => b.no - a.no).slice(0, 8);
+  cardEyebrow.textContent = 'Chuyến tàu';
+  cardBody.replaceChildren(h('div', { class: 'info', style: 'display:grid;gap:10px' }, h('h3', null, 'Chuyến Tàu Cứ Cho Đi'),
+    h('p', null, 'Tối Chủ nhật, mỗi toa chở một món quà cư dân cho đi trong tuần.'),
+    gifts.length ? h('ul', { class: 'gift-list' }, gifts.map(g => h('li', null, h('small', null, `Nhà ${pad(g.no)} · ${XOM[g.xom].name}`), g.give))) : h('p', { class: 'muted' }, 'Tuần này chưa có món quà nào được ghi lại.')));
+  card.hidden = false;
+}
+function openStationCard() {
+  const fresh = houses().slice().sort((a, b) => b.no - a.no).slice(0, 6);
+  cardEyebrow.textContent = 'Ga Làng';
+  cardBody.replaceChildren(h('div', { class: 'info', style: 'display:grid;gap:10px' }, h('h3', null, 'Ga Làng'), h('p', null, 'Nơi người mới xuống tàu vào làng. Mỗi cư dân mới có một hàng xóm cùng xóm ra đón.'),
+    fresh.length ? h('ul', { class: 'gift-list' }, fresh.map(g => h('li', null, h('small', null, `Nhà ${pad(g.no)} · ${XOM[g.xom].name}`), g.name))) : h('p', { class: 'muted' }, 'Chưa có cư dân nào xuống ga.')));
+  card.hidden = false;
+}
+function openFor(pk) {
+  $('#admin').hidden = true;
+  if (pk.type === 'house') openHouseCard(pk.no);
+  else if (pk.type === 'ws') openWsCard(pk.key);
+  else if (pk.type === 'pub') openPubCard(pk.key);
+  else if (pk.type === 'train') openTrainCard();
+  else if (pk.type === 'station') openStationCard();
+}
+
+/* ================= Bảng thông tin trái ================= */
+function renderBrand() {
+  const list = houses();
+  $('#st-houses').textContent = list.length;
+  $('#st-people').textContent = list.reduce((s, hh) => s + membersOf(hh), 0);
+  $('#st-weather').textContent = WEATHER_LABEL[villageWeather()] || 'Nắng';
+  $('#mode-sample').setAttribute('aria-pressed', String(state.mode === 'sample'));
+  $('#mode-real').setAttribute('aria-pressed', String(state.mode === 'real'));
+  const note = $('#mode-note');
+  if (state.mode === 'sample') note.replaceChildren('Đang xem ', h('b', null, 'làng mẫu'), ': nhà và cư dân chỉ để minh hoạ.');
+  else if (!state.db) note.replaceChildren('Làng thật chỉ mở được khi xem trang trong Claude và đã đăng nhập.');
+  else if (!state.real.length) note.replaceChildren(h('b', null, 'Làng thật'), state.canEdit ? ' chưa có nhà nào. Mở Trạm Trưởng Làng để nhập danh sách cư dân.' : ' chưa có nhà nào. Trưởng Làng đang mở đất.');
+  else note.replaceChildren('Đang xem ', h('b', null, 'làng thật'), `: ${state.real.filter(hh => hh.provisional).length} nhà còn tạm xếp xóm.`);
+  $('#mode-real').disabled = !state.db;
+  const lg = $('#legend'); lg.replaceChildren(...XOMS.map(x => h('li', null, h('button', { type: 'button', style: `--c:${x.roof}`, onclick: () => flyToXom(x.key) }, h('span', { class: 'dot' }), h('span', { class: 'nm' }, x.name, h('small', null, x.age)), h('span', { class: 'ct' }, `${list.filter(hh => hh.xom === x.key).length} nhà`)))));
+}
+function refreshAll() {
+  buildHouses(); renderBrand(); refreshLabelCounts(); placeWsRing(); computeTarget();
+  if (!$('#admin').hidden) renderAdmin();
+  if (!card.hidden && state.selected && !findHouse(state.selected)) closeCard();
+}
+function setMode(m, byUser) {
+  if (m === 'real' && !state.db) { toast('Làng thật chỉ mở được khi xem trang trong Claude và đã đăng nhập.'); return; }
+  if (byUser) state.userPickedMode = true;
+  if (state.mode === m) return;
+  state.mode = m; state.selected = null; closeCard(); refreshAll();
+}
+$('#mode-sample').addEventListener('click', () => setMode('sample', true));
+$('#mode-real').addEventListener('click', () => setMode('real', true));
+
+/* ================= Bến điều khiển ================= */
+$$('[data-cam]').forEach(b => b.addEventListener('click', () => setCam(b.dataset.cam)));
+$$('[data-time]').forEach(b => b.addEventListener('click', () => { state.timeMode = b.dataset.time; $$('[data-time]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); computeTarget(); }));
+$$('[data-weather]').forEach(b => b.addEventListener('click', () => { state.weatherMode = b.dataset.weather; $$('[data-weather]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); computeTarget(); }));
+function setToggle(name, val) {
+  state[name] = val; const b = $(`[data-toggle="${name}"]`); if (b) b.setAttribute('aria-pressed', String(val));
+  if (name === 'ink') inkObjects.forEach(o => { o.visible = val; });
+  if (name === 'spin') controls.autoRotate = val && state.cam !== 'train';
+  if (name === 'lite') { renderer.shadowMap.enabled = !val; renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, val ? 1.25 : 2)); scene.traverse(o => { if (o.material && o.material.needsUpdate !== undefined) o.material.needsUpdate = true; }); resize(); }
+}
+$$('[data-toggle]').forEach(b => b.addEventListener('click', () => setToggle(b.dataset.toggle, b.getAttribute('aria-pressed') !== 'true')));
+const dock = $('#dock');
+$('#dock-toggle').addEventListener('click', e => { const col = dock.classList.toggle('is-collapsed'); e.currentTarget.setAttribute('aria-expanded', String(!col)); e.currentTarget.textContent = col ? 'Thêm' : 'Thu gọn'; });
+if (window.innerWidth <= 760) { dock.classList.add('is-collapsed'); $('#legend-wrap').open = false; }
+const brand = $('#brand'), brandShow = $('#brand-show');
+function setBrand(show, remember) {
+  brand.hidden = !show; brandShow.hidden = show;
+  if (remember) { try { localStorage.setItem('lang-brand-hidden', show ? '0' : '1'); } catch (e) {} }
+}
+$('#brand-hide').addEventListener('click', () => { setBrand(false, true); brandShow.focus(); });
+brandShow.addEventListener('click', () => { setBrand(true, true); $('#brand-hide').focus(); });
+try { if (localStorage.getItem('lang-brand-hidden') === '1') setBrand(false, false); } catch (e) {}
+
+const findIn = $('#find'), findRes = $('#find-results');
+function searchHouses(q) {
+  const n = norm(q); if (!n) return [];
+  const num = parseInt(n.replace(/^(nha|so)\s*/, ''), 10);
+  return houses().filter(hh => (!isNaN(num) && String(hh.no).startsWith(String(num))) || norm(hh.name).includes(n)).sort((a, b) => a.no - b.no).slice(0, 8);
+}
+function renderFind() {
+  const res = searchHouses(findIn.value);
+  if (!findIn.value.trim()) { findRes.hidden = true; return; }
+  findRes.replaceChildren(...(res.length ? res.map(hh => h('li', null, h('button', { type: 'button', onclick: () => { findRes.hidden = true; findIn.value = ''; openHouseCard(hh.no); flyToHouse(hh.no); } }, `Nhà ${pad(hh.no)} · `, hh.name, ' ', h('small', null, XOM[hh.xom].name)))) : [h('li', { class: 'muted', style: 'padding:6px 8px;font-size:13px' }, 'Không tìm thấy nhà nào.')]));
+  findRes.hidden = false;
+}
+findIn.addEventListener('input', renderFind);
+findIn.addEventListener('keydown', e => { if (e.key === 'Enter') { const r = searchHouses(findIn.value)[0]; if (r) { findRes.hidden = true; findIn.value = ''; openHouseCard(r.no); flyToHouse(r.no); } } if (e.key === 'Escape') { findRes.hidden = true; } });
+document.addEventListener('click', e => { if (!e.target.closest('.find')) findRes.hidden = true; });
+
+window.addEventListener('keydown', e => {
+  if (e.target.closest('input,textarea,select')) return;
+  const map = { '1': 'overview', '2': 'train', '3': 'child', '4': 'home' };
+  if (map[e.key]) setCam(map[e.key]);
+  else if (e.key === 't' || e.key === 'T') { const order = ['auto', 'day', 'evening', 'night']; const nx = order[(order.indexOf(state.timeMode) + 1) % 4]; $(`[data-time="${nx}"]`).click(); }
+  else if (e.key === 'l' || e.key === 'L') setToggle('labels', !state.labels);
+  else if (e.key === 'b' || e.key === 'B') { if (!film.on) setBrand(brand.hidden, true); }
+  else if (e.key === 'f' || e.key === 'F') setFilm(!film.on);
+  else if (e.key === 'Escape') { if (film.on) setFilm(false); else { closeCard(); $('#admin').hidden = true; } }
+});
+
+/* Chế độ quay phim: ẩn mọi bảng, nút thoát tự mờ khi không động chuột */
+const film = { on: false, timer: 0 }, filmExit = $('#film-exit');
+function filmWake() {
+  if (!film.on) return;
+  document.body.classList.remove('film-idle');
+  clearTimeout(film.timer);
+  film.timer = setTimeout(() => { if (film.on) document.body.classList.add('film-idle'); }, 2200);
+}
+function setFilm(on) {
+  film.on = on;
+  document.body.classList.toggle('film', on);
+  filmExit.hidden = !on;
+  if (on) { tip.hidden = true; findRes.hidden = true; filmWake(); canvas.focus(); }
+  else { clearTimeout(film.timer); document.body.classList.remove('film-idle'); $('#film-on').focus(); }
+}
+$('#film-on').addEventListener('click', () => setFilm(true));
+filmExit.addEventListener('click', () => setFilm(false));
+['pointermove', 'pointerdown'].forEach(ev => window.addEventListener(ev, filmWake, { passive: true }));
+function applyHash() { if (location.hash === '#quay-phim') { setFilm(true); return; } const m =/^#nha-(\d{1,3})$/.exec(location.hash || ''); if (!m) return; const no = parseInt(m[1], 10); if (findHouse(no)) { openHouseCard(no); flyToHouse(no); } }
+window.addEventListener('hashchange', applyHash);
+
+/* ================= Trạm Trưởng Làng ================= */
+const admin = $('#admin');
+function openAdmin(tab) { closeCard(); admin.hidden = false; selectTab(tab || 'import'); renderAdmin(); }
+$('#open-admin').addEventListener('click', () => openAdmin());
+$('#admin-close').addEventListener('click', () => { admin.hidden = true; });
+function selectTab(t) { $$('.tabs [data-tab]', admin).forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t))); $$('[data-panel]', admin).forEach(p => { p.hidden = p.dataset.panel !== t; }); }
+$$('.tabs [data-tab]', admin).forEach(b => b.addEventListener('click', () => { selectTab(b.dataset.tab); renderAdmin(); }));
+const xomOptions = sel => { sel.replaceChildren(...XOMS.map(x => h('option', { value: x.key }, `${x.name} (${x.age})`))); };
+xomOptions($('#hf-xom')); xomOptions($('#imp-one'));
+$('#wk-ws').replaceChildren(...WORKSHOPS.map(w => h('option', { value: w.key }, `${w.name}, ${w.nghe}`)));
+function nextFree(list, from) { const used = new Set(list.map(hh => hh.no)); let n = Math.max(1, from || 1); while (used.has(n)) n++; return n; }
+function maxNo(list) { return list.reduce((m, hh) => Math.max(m, hh.no), 0); }
+
+let writeChain = Promise.resolve();
+function saveRegistry(list, okMsg) {
+  if (!state.registryRef) { toast('Chưa kết nối được kho dữ liệu của làng.'); return Promise.resolve(false); }
+  if (state.mode !== 'real') { state.mode = 'real'; state.userPickedMode = true; state.selected = null; closeCard(); refreshAll(); }
+  const obj = {}; list.forEach(hh => { obj[pad(hh.no)] = cleanHouse(hh); });
+  const bodyDoc = { houses: obj, updatedAt: new Date().toISOString() };
+  writeChain = writeChain.then(() => state.registryRef.set(bodyDoc)).then(() => { if (okMsg) toast(okMsg); return true; }, err => { toast(err && err.code === 'invalid_argument' ? 'Bạn chưa có quyền sửa làng này.' : err && err.code === 'quota_exceeded' ? 'Kho dữ liệu của làng đã đầy.' : 'Chưa lưu được, thử lại sau ít phút.'); return false; });
+  return writeChain;
+}
+function cleanHouse(hh) {
+  return { no: hh.no | 0, name: String(hh.name || '').slice(0, 60), xom: XOM[hh.xom] ? hh.xom : 'noi', adults: clamp(hh.adults | 0, 0, 8), kids: (hh.kids || []).filter(k => AGE_KEYS.includes(k)).slice(0, 8), give: String(hh.give || '').slice(0, 120), joined: /^\d{4}-\d{2}-\d{2}$/.test(hh.joined || '') ? hh.joined : '', smoke: !!hh.smoke, lit: !!hh.lit, founding: !!hh.founding, provisional: !!hh.provisional };
+}
+function readHouse(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  const no = parseInt(raw.no, 10); if (!(no >= 1 && no <= 999)) return null;
+  return cleanHouse(Object.assign({}, raw, { no }));
+}
+function realCopy() { return state.real.map(hh => Object.assign({}, hh, { kids: (hh.kids || []).slice() })); }
+
+/* Nhập danh sách */
+const SKIP = [/^đã tham gia/i, /tham gia (khoảng|vào|từ|nhóm)/i, /bạn chung/i, /·/, /^\d+$/, /http/i, /^đây là/i, /(trước|hôm qua|hôm nay)$/i,
+  /^(thành viên|mọi người|quản trị viên|người kiểm duyệt|nhóm của|xem tất cả|xem thêm|tìm kiếm|thêm bạn bè|nhắn tin|bạn bè|mời|chia sẻ|thảo luận|đáng chú ý|sự kiện|file|tất cả|chuyên gia|người đóng góp|mới tham gia|hoạt động|theo dõi|trang chủ|quản lý|công cụ|hỗ trợ|cài đặt|thông tin|nhật ký|bài viết|có thể là spam|trạng thái|vai trò|giới thiệu|chỉnh sửa|nhóm công khai|nhóm riêng tư|trang|người theo dõi)\b/i,
+  /^(sống tại|làm việc tại|học tại|đến từ|từng học|quê ở|đã học)/i];
+function cleanNames(raw) {
+  const out = [], seen = new Set();
+  String(raw || '').split(/\r?\n/).forEach(line => {
+    const s = line.replace(/\s+/g, ' ').trim();
+    if (s.length < 2 || s.length > 60) return;
+    if (SKIP.some(re => re.test(s))) return;
+    if (norm(s) === norm('Làng Nghề Làm Cha Mẹ')) return;
+    const k = norm(s); if (seen.has(k)) return; seen.add(k); out.push(s);
+  });
+  return out;
+}
+function importPlan() {
+  let names = $('#imp-names').value.split(/\r?\n/).map(s => s.replace(/\s+/g, ' ').trim()).filter(s => s.length >= 2).map(s => s.slice(0, 60));
+  const seen = new Set(); names = names.filter(n => { const k = norm(n); if (seen.has(k)) return false; seen.add(k); return true; });
+  if ($('#imp-reverse').checked) names.reverse();
+  const cur = realCopy(), existing = new Set(cur.map(hh => norm(hh.name)));
+  const dupes = names.filter(n => existing.has(norm(n)));
+  names = names.filter(n => !existing.has(norm(n)));
+  const method = $('#imp-method').value, one = $('#imp-one').value, keys = method === 'even5' ? XOMS.map(x => x.key) : ['noi', 'mam', 'tre', 'gio'];
+  const counts = {}; XOMS.forEach(x => { counts[x.key] = cur.filter(hh => hh.xom === x.key).length; });
+  const used = new Set(cur.map(hh => hh.no)); let no = Math.max(1, parseInt($('#imp-start').value, 10) || 1);
+  const planned = names.map(name => {
+    while (used.has(no)) no++;
+    let xom = one;
+    if (method !== 'one') { xom = keys.reduce((best, k) => (counts[k] < counts[best] ? k : best), keys[0]); }
+    counts[xom]++; used.add(no);
+    return { no: no++, name, xom, adults: 1, kids: [], give: '', joined: '', smoke: false, lit: false, founding: $('#imp-founding').checked, provisional: method !== 'one' };
+  });
+  return { planned, dupes, cur };
+}
+function renderImportPreview() {
+  const box = $('#imp-preview'), go = $('#imp-go');
+  $('#imp-one-wrap').hidden = $('#imp-method').value !== 'one';
+  const { planned, dupes } = importPlan();
+  go.disabled = !planned.length || !state.db;
+  go.textContent = planned.length ? `Đánh số & xếp xóm (${planned.length} nhà)` : 'Đánh số & xếp xóm';
+  if (!planned.length) { box.replaceChildren(dupes.length ? `Cả ${dupes.length} tên đều đã có nhà trong làng.` : 'Chưa có tên nào.'); return; }
+  const tally = XOMS.map(x => [x, planned.filter(p => p.xom === x.key).length]).filter(([, n]) => n);
+  const first = planned.slice(0, 4), last = planned.length > 6 ? planned.slice(-2) : planned.slice(4);
+  box.replaceChildren(
+    h('div', null, `${planned.length} nhà mới, số ${pad(planned[0].no)} đến ${pad(planned[planned.length - 1].no)}. `, tally.map(([x, n]) => `${x.name} ${n}`).join(' · '), '.'),
+    ...(dupes.length ? [h('div', { class: 'muted' }, `Bỏ qua ${dupes.length} tên đã có nhà.`)] : []),
+    h('ol', null, first.map(p => h('li', { value: p.no }, `${p.name} → ${XOM[p.xom].name}`)), planned.length > 6 ? h('li', { style: 'list-style:none' }, '…') : null, (planned.length > 6 ? last : last).map(p => h('li', { value: p.no }, `${p.name} → ${XOM[p.xom].name}`))));
+}
+$('#imp-clean').addEventListener('click', () => { const names = cleanNames($('#imp-raw').value); $('#imp-names').value = names.join('\n'); if (!names.length) toast('Không tìm thấy tên nào trong đoạn đã dán.'); else toast(`Lọc được ${names.length} tên. Xem lại danh sách trước khi đánh số.`); renderImportPreview(); });
+['imp-names', 'imp-start'].forEach(id => $('#' + id).addEventListener('input', renderImportPreview));
+['imp-reverse', 'imp-method', 'imp-one', 'imp-founding'].forEach(id => $('#' + id).addEventListener('change', renderImportPreview));
+$('#imp-go').addEventListener('click', async () => {
+  const { planned, cur } = importPlan(); if (!planned.length) return;
+  const btn = $('#imp-go'); btn.disabled = true; btn.textContent = 'Đang dựng nhà…';
+  const ok = await saveRegistry(cur.concat(planned), `Đã dựng ${planned.length} nhà mới.`);
+  if (ok) { $('#imp-names').value = ''; $('#imp-raw').value = ''; }
+  renderImportPreview();
+});
+
+/* Thêm / sửa nhà */
+let editingNo = null;
+function kidRow(val) {
+  const sel = h('select', { 'aria-label': 'Nhóm tuổi của con' }, AGE_KEYS.map(k => h('option', { value: k }, AGE_LABEL[k])));
+  sel.value = val || '3-6';
+  const row = h('div', { class: 'kid-row' }, sel, h('button', { type: 'button', class: 'btn small', 'aria-label': 'Bỏ con này', onclick: () => row.remove() }, 'Bỏ'));
+  return row;
+}
+$('#hf-addkid').addEventListener('click', () => { if ($('#hf-kids').children.length < 8) $('#hf-kids').append(kidRow()); });
+function loadHouseForm(hh) {
+  editingNo = hh ? hh.no : null;
+  $('#hf-mode').textContent = hh ? `Đang sửa nhà ${pad(hh.no)}` : 'Thêm nhà mới';
+  $('#hf-no').value = hh ? hh.no : nextFree(state.real, maxNo(state.real) + 1);
+  $('#hf-name').value = hh ? hh.name : '';
+  $('#hf-xom').value = hh ? hh.xom : 'noi';
+  $('#hf-adults').value = hh ? hh.adults : 2;
+  $('#hf-joined').value = hh ? (hh.joined || '') : todayISO();
+  $('#hf-give').value = hh ? hh.give : '';
+  $('#hf-smoke').checked = hh ? hh.smoke : false; $('#hf-lit').checked = hh ? hh.lit : false;
+  $('#hf-prov').checked = hh ? hh.provisional : false; $('#hf-found').checked = hh ? hh.founding : false;
+  $('#hf-kids').replaceChildren(...(hh ? hh.kids : []).map(k => kidRow(k)));
+  $('#hf-del').hidden = !hh; $('#hf-del').textContent = 'Xoá nhà'; delArmed = false;
+  $('#hf-err').textContent = '';
+}
+$('#hf-reset').addEventListener('click', () => loadHouseForm(null));
+$('#hf').addEventListener('submit', async e => {
+  e.preventDefault();
+  const no = parseInt($('#hf-no').value, 10), name = $('#hf-name').value.replace(/\s+/g, ' ').trim(), err = $('#hf-err');
+  if (!(no >= 1 && no <= 999)) { err.textContent = 'Số nhà cần là số từ 1 đến 999.'; $('#hf-no').focus(); return; }
+  if (!name) { err.textContent = 'Nhập tên hiển thị cho ngôi nhà.'; $('#hf-name').focus(); return; }
+  const list = realCopy();
+  const clash = list.find(hh => hh.no === no && hh.no !== editingNo);
+  if (clash) { err.textContent = `Số ${pad(no)} đã là nhà của ${clash.name}. Chọn số khác.`; $('#hf-no').focus(); return; }
+  err.textContent = '';
+  const rec = { no, name, xom: $('#hf-xom').value, adults: parseInt($('#hf-adults').value, 10) || 0, kids: $$('#hf-kids select').map(s => s.value), give: $('#hf-give').value.trim(), joined: $('#hf-joined').value, smoke: $('#hf-smoke').checked, lit: $('#hf-lit').checked, provisional: $('#hf-prov').checked, founding: $('#hf-found').checked };
+  const next = list.filter(hh => hh.no !== editingNo && hh.no !== no).concat([rec]);
+  const ok = await saveRegistry(next, editingNo ? `Đã lưu nhà ${pad(no)}.` : `Đã dựng nhà ${pad(no)}.`);
+  if (ok) { state.selected = no; loadHouseForm(rec); }
+});
+let delArmed = false, delTimer = 0;
+$('#hf-del').addEventListener('click', async () => {
+  if (editingNo == null) return;
+  const btn = $('#hf-del');
+  if (!delArmed) { delArmed = true; btn.textContent = 'Bấm lần nữa để xoá'; clearTimeout(delTimer); delTimer = setTimeout(() => { delArmed = false; btn.textContent = 'Xoá nhà'; }, 4000); return; }
+  delArmed = false;
+  const no = editingNo;
+  const ok = await saveRegistry(realCopy().filter(hh => hh.no !== no), `Đã xoá nhà ${pad(no)}.`);
+  if (ok) { if (state.selected === no) state.selected = null; loadHouseForm(null); }
+});
+const pickIn = $('#hf-pick');
+function renderPickList() {
+  const q = norm(pickIn.value);
+  const list = state.real.filter(hh => !q || String(hh.no).startsWith(q.replace(/\D/g, '') || '§') || norm(hh.name).includes(q)).sort((a, b) => a.no - b.no).slice(0, 40);
+  $('#hf-pick-list').replaceChildren(...list.map(hh => h('li', null, h('button', { type: 'button', onclick: () => { loadHouseForm(hh); $('#hf-name').focus(); } }, `${pad(hh.no)} · ${hh.name} · ${XOM[hh.xom].name}${hh.provisional ? ' (tạm)' : ''}`))));
+}
+pickIn.addEventListener('input', renderPickList);
+
+/* Chia lại */
+function renderSplit() {
+  const list = state.real, prov = list.filter(hh => hh.provisional).length, withKids = list.filter(hh => (hh.kids || []).length).length;
+  $('#sp-summary').replaceChildren(list.length ? `Làng thật có ${list.length} nhà, ${prov} nhà đang tạm xếp. ` : 'Làng thật chưa có nhà nào. ', list.length ? XOMS.map(x => `${x.name} ${list.filter(hh => hh.xom === x.key).length}`).join(' · ') : '');
+  $('#sp-kids-count').textContent = withKids ? `Hiện có ${withKids} nhà đã khai tuổi con.` : 'Chưa nhà nào khai tuổi con.';
+  $('#sp-even').disabled = !prov; $('#sp-kids').disabled = !withKids;
+}
+$('#sp-even').addEventListener('click', async () => {
+  const list = realCopy(), keys = ['noi', 'mam', 'tre', 'gio'], counts = {};
+  XOMS.forEach(x => { counts[x.key] = list.filter(hh => !hh.provisional && hh.xom === x.key).length; });
+  list.filter(hh => hh.provisional).sort((a, b) => a.no - b.no).forEach(hh => { const k = keys.reduce((b, q) => (counts[q] < counts[b] ? q : b), keys[0]); hh.xom = k; counts[k]++; });
+  await saveRegistry(list, 'Đã chia đều lại các nhà tạm xếp.');
+});
+$('#sp-kids').addEventListener('click', async () => {
+  const list = realCopy(); let n = 0;
+  list.forEach(hh => { const kids = (hh.kids || []).slice().sort((a, b) => AGE_KEYS.indexOf(a) - AGE_KEYS.indexOf(b)); if (kids.length) { hh.xom = AGE_XOM[kids[0]]; hh.provisional = false; n++; } });
+  await saveRegistry(list, `Đã xếp ${n} nhà theo tuổi con.`);
+});
+
+/* Làng tuần này */
+$('#wk-save').addEventListener('click', async () => {
+  if (!state.settingsRef) { toast('Chưa kết nối được kho dữ liệu của làng.'); return; }
+  const body = { weather: $('#wk-weather').value, workshop: $('#wk-ws').value, updatedAt: new Date().toISOString() };
+  try { await state.settingsRef.set(body); toast('Đã lưu thời tiết và xưởng của làng.'); } catch (e) { toast('Chưa lưu được, thử lại sau ít phút.'); }
+});
+let wipeArmed = false, wipeTimer = 0;
+$('#wk-wipe').addEventListener('click', async () => {
+  const btn = $('#wk-wipe');
+  if (!wipeArmed) { wipeArmed = true; btn.textContent = `Bấm lần nữa để xoá ${state.real.length} nhà`; clearTimeout(wipeTimer); wipeTimer = setTimeout(() => { wipeArmed = false; btn.textContent = 'Xoá toàn bộ nhà'; }, 4000); return; }
+  wipeArmed = false; btn.textContent = 'Xoá toàn bộ nhà';
+  const ok = await saveRegistry([], 'Đã xoá toàn bộ nhà của làng thật.'); if (ok) state.selected = null;
+});
+function renderAdmin() {
+  if (admin.hidden) return;
+  renderImportPreview(); renderPickList(); renderSplit();
+  if (editingNo == null && document.activeElement && !admin.contains(document.activeElement)) loadHouseForm(null);
+  $('#wk-weather').value = state.settings.weather; $('#wk-ws').value = state.settings.workshop;
+  const suggested = nextFree(state.real, maxNo(state.real) + 1);
+  if (document.activeElement !== $('#imp-start')) $('#imp-start').value = suggested;
+}
+
+/* ================= Kết nối kho dữ liệu ================= */
+(async function connect() {
+  const cl = window.claude;
+  if (!cl || typeof cl.use !== 'function') { renderBrand(); return; }
+  let db = null; try { db = await cl.use('db'); } catch (e) { db = null; }
+  if (!db) { renderBrand(); return; }
+  state.db = db;
+  try { state.registryRef = db.doc('village/registry'); state.settingsRef = db.doc('village/settings'); } catch (e) { state.db = null; renderBrand(); return; }
+  state.registryRef.onSnapshot(snap => {
+    const d = snap.exists ? snap.data() : null;
+    const raw = d && d.houses && typeof d.houses === 'object' ? Object.values(d.houses) : [];
+    const before = state.real.length;
+    state.real = raw.map(readHouse).filter(Boolean).sort((a, b) => a.no - b.no);
+    const firstLoad = !state.realLoaded; state.realLoaded = true;
+    if (!state.userPickedMode && state.real.length && state.mode !== 'real') { state.mode = 'real'; state.selected = null; }
+    if (state.mode === 'real' || firstLoad) refreshAll(); else renderBrand();
+    if (!firstLoad && state.mode === 'real' && state.real.length > before && !snap.metadata.hasPendingWrites) { const nw = state.real[state.real.length - 1]; toast(`Nhà ${pad(nw.no)} vừa nhận nhà ở ${XOM[nw.xom].name}.`); }
+    if (firstLoad) applyHash();
+  }, err => { toast('Không đọc được dữ liệu làng lúc này.'); });
+  state.settingsRef.onSnapshot(snap => {
+    if (!snap.exists) return; const d = snap.data() || {};
+    if (WEATHER_LABEL[d.weather]) state.settings.weather = d.weather;
+    if (WS[d.workshop]) state.settings.workshop = d.workshop;
+    renderBrand(); refreshLabelCounts(); placeWsRing(); computeTarget(); if (!admin.hidden) renderAdmin();
+  }, () => {});
+  try { const user = await cl.use('user'); state.canEdit = user ? !!(await user.canEdit()) : false; } catch (e) { state.canEdit = false; }
+  $('#open-admin').hidden = !state.canEdit;
+  renderBrand();
+})();
+
+/* ================= Khởi động ================= */
+function resize() {
+  const r = $('#stage').getBoundingClientRect(); viewW = Math.max(1, r.width); viewH = Math.max(1, r.height);
+  renderer.setSize(viewW, viewH, false); camera.aspect = viewW / viewH; camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+resize();
+
+buildTerrain(); buildRiver(); buildStatic(); buildForest(); buildLanterns(); buildTrain(); buildWalkers(); buildBirds(); buildClouds(); buildRain(); buildStars(); buildSkyBodies(); buildPlane(); buildBoat(); buildSigns(); buildLabels();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(buildSigns).catch(() => {});
+refreshAll();
+const d0 = DEFAULT(); camera.position.copy(d0.pos); controls.target.copy(d0.tgt); controls.update();
+computeTarget(); applyLight(0, true);
+setToggle('lite', state.lite);
+applyHash();
+setInterval(computeTarget, 60000);
+
+const clock = new T.Clock();
+let time = 0, firstFrame = true;
+const _m4 = new T.Matrix4(), _dummyQ = new T.Quaternion();
+function tick() {
+  const raw = Math.min(clock.getDelta(), 0.25), dt = Math.min(raw, 0.05); time += dt; frameN++;
+  applyLight(raw);
+  updateTrain(dt); updateWalkers(dt, time);
+  // camera
+  if (state.cam === 'train') {
+    const lead = train.cars[0].obj.position;
+    const inward = new T.Vector3(-lead.x, 0, -lead.z).normalize();
+    camera.position.copy(lead).addScaledVector(trainTan, 2.3).add(new T.Vector3(0, 2.6, 0)).addScaledVector(inward, 0.3);
+    controls.target.copy(lead).addScaledVector(trainTan, 16).addScaledVector(inward, 6).add(new T.Vector3(0, 1.0, 0));
+    camera.lookAt(controls.target);
+  } else if (fly) {
+    fly.t += raw / fly.dur; const k = smooth(fly.t);
+    camera.position.lerpVectors(fly.p0, fly.p1, k); controls.target.lerpVectors(fly.t0, fly.t1, k); camera.lookAt(controls.target);
+    if (fly.t >= 1) { fly = null; controls.enabled = true; controls.autoRotate = state.spin; controls.update(); }
+  } else { controls.enabled = true; controls.autoRotate = state.spin; controls.update(); }
+  // chim
+  birds.forEach(b => { const a = time * b.sp + b.ph; b.g.position.set(Math.cos(a) * b.rad, b.hgt + Math.sin(a * 2) * 1.2, Math.sin(a) * b.rad); b.g.rotation.y = -a; const f = Math.sin(time * 9 + b.ph) * 0.55; b.l.rotation.z = f; b.r.rotation.z = -f; });
+  // mây
+  clouds.forEach(c => { c.a += c.sp * dt; c.m.position.set(Math.cos(c.a) * c.r, c.y, Math.sin(c.a) * c.r); c.m.rotation.y = -c.a; c.m.visible = currentWeather() === 'sunny' ? c.keep : true; });
+  // mưa
+  if (rain.visible) { for (let i = 0; i < RAIN_N; i++) { const o = i * 6; let y = rainPos[o + 1] - dt * 55; if (y < 0) y += 70; rainPos[o + 1] = y; rainPos[o + 4] = y - 1.3; } rain.geometry.attributes.position.needsUpdate = true; }
+  // thuyền
+  boatU += boatDir * dt * 0.006; if (boatU > 0.82 || boatU < 0.12) boatDir *= -1;
+  const bp = riverCurve.getPointAt(boatU), bt = riverCurve.getTangentAt(boatU).multiplyScalar(boatDir);
+  boat.position.set(bp.x, 0.12 + Math.sin(time * 2) * 0.04, bp.z); boat.rotation.y = Math.atan2(bt.x, bt.z);
+  // sóng lấp lánh
+  riverSparkleData.forEach((s, i) => { s.u = (s.u + dt * s.sp) % 1; const p = riverCurve.getPointAt(s.u), tg = riverCurve.getTangentAt(s.u); riverSparkles.setMatrixAt(i, M(p.x - tg.z * s.off, 0.16, p.z + tg.x * s.off, Math.atan2(tg.x, tg.z), 0.14, 0.03, 0.9 + (i % 3) * 0.3)); });
+  riverSparkles.instanceMatrix.needsUpdate = true;
+  // khói
+  let n = 0;
+  const wind = 0.9;
+  for (const s of smokeList) {
+    if (n >= 880) break;
+    const t = (time * 0.32 + s.ph) % 1, sc = (0.35 + t * 1.15) * (1 - smooth((t - 0.72) / 0.28));
+    puffs.setMatrixAt(n++, M(s.x + t * wind, s.y + t * 3.3, s.z + t * 0.3, t * 3, sc, sc, sc));
+  }
+  trainPuffs.forEach(p => { p.age += dt; if (p.age < 2.4) { p.y += dt * 1.7; const t = p.age / 2.4, sc = (0.5 + t * 1.6) * (1 - smooth((t - 0.7) / 0.3)); puffs.setMatrixAt(n++, M(p.x, p.y, p.z, t * 4, sc, sc, sc)); } });
+  puffs.count = n; puffs.instanceMatrix.needsUpdate = true;
+  if (fireMesh) { const f = 1 + Math.sin(time * 13) * 0.12 + Math.sin(time * 7.3) * 0.08; fireMesh.scale.set(1, 1, 1); fireMesh.position.y = 0; fireMesh.scale.y = f; }
+  // vòng chọn
+  if (selRing.visible) { const s = 1 + Math.sin(time * 4) * 0.04; selRing.material.color.setHSL(0.11, 0.85, 0.55 + Math.sin(time * 4) * 0.05); selRing.position.y = 0.12; selRing.rotation.z = time * 0.3; }
+  wsRing.rotation.z = -time * 0.2;
+  updatePlane(dt); updateSkyBodies();
+  renderer.render(scene, camera);
+  if (frameN % 2 === 0) updateLabels();
+  doHover();
+  if (firstFrame) { firstFrame = false; loadingEl.remove(); }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+})();
+
+</script>
+
+</body></html>
